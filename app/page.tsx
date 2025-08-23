@@ -111,6 +111,11 @@ export default function CashTubePage() {
 
   // Handle passcode details completion (Step 1)
   const handlePasscodeDetailsComplete = (detailsData: any) => {
+    // Store user name in localStorage for dashboard use
+    if (typeof window !== "undefined" && detailsData.name) {
+      localStorage.setItem("cashtube_user_name", detailsData.name)
+    }
+
     // Store details and move to payment form
     setPendingPasscode({ detailsData, formData: null })
     setShowPasscodeDetailsForm(false)
@@ -167,7 +172,7 @@ export default function CashTubePage() {
         </div>
       )}
 
-      {/* Header - Menu button moved back to top left and made extra bold */}
+      {/* Header - Menu button in top left and extra bold */}
       <div className="flex justify-start p-2">
         <Button
           variant="ghost"
@@ -180,7 +185,7 @@ export default function CashTubePage() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col items-center justify-center px-4 space-y-5">
+      <div className="flex-1 flex flex-col items-center justify-center px-4 space-y-6">
         {/* Logo */}
         <div className="relative">
           <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-pink-500 to-pink-600 rounded-full flex items-center justify-center shadow-lg">
@@ -192,7 +197,7 @@ export default function CashTubePage() {
         </div>
 
         {/* Welcome Text */}
-        <div className="text-center space-y-1">
+        <div className="text-center space-y-2">
           <h4 className="text-xl sm:text-2xl font-semibold text-gray-800">Welcome To</h4>
           <h4 className="text-lg sm:text-xl font-semibold text-pink-500">CashTube2025</h4>
           <p className="text-sm sm:text-base text-gray-700 font-medium">{"Enter (5) digit code"}</p>
@@ -210,13 +215,13 @@ export default function CashTubePage() {
         </div>
 
         {/* Number Pad */}
-        <div className="grid grid-cols-3 gap-2 sm:gap-3 max-w-[180px] sm:max-w-[200px]">
+        <div className="grid grid-cols-3 gap-3 sm:gap-4 max-w-[200px] sm:max-w-[240px]">
           {numbers.map((num) => (
             <Button
               key={num}
               variant="outline"
               size="lg"
-              className="h-10 w-14 sm:h-12 sm:w-16 text-lg sm:text-xl font-medium border-2 border-gray-300 hover:bg-gray-100 bg-white shadow-sm rounded-lg"
+              className="h-12 w-16 sm:h-14 sm:w-18 text-lg sm:text-xl font-medium border-2 border-gray-300 hover:bg-gray-100 bg-white shadow-sm rounded-lg"
               onClick={() => handleNumberClick(num)}
             >
               {num}
@@ -224,39 +229,39 @@ export default function CashTubePage() {
           ))}
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex space-x-2 sm:space-x-3">
+        {/* Action Buttons - Added more spacing */}
+        <div className="flex space-x-4 sm:space-x-5">
           <Button
             variant="destructive"
-            className="px-4 py-2 sm:px-5 sm:py-2 bg-red-500 hover:bg-red-600 text-sm sm:text-base font-medium rounded-lg shadow-sm"
+            className="px-5 py-3 sm:px-6 sm:py-3 bg-red-500 hover:bg-red-600 text-sm sm:text-base font-medium rounded-lg shadow-sm"
             onClick={handleSignUp}
           >
             Sign Up
           </Button>
           <Button
             variant="outline"
-            className="px-4 py-2 sm:px-5 sm:py-2 border-2 border-gray-300 text-gray-700 hover:bg-gray-100 bg-white text-sm sm:text-base font-medium rounded-lg shadow-sm"
+            className="px-5 py-3 sm:px-6 sm:py-3 border-2 border-gray-300 text-gray-700 hover:bg-gray-100 bg-white text-sm sm:text-base font-medium rounded-lg shadow-sm"
             onClick={handleClear}
           >
             Clear
           </Button>
           <Button
-            className="px-4 py-2 sm:px-5 sm:py-2 bg-green-600 hover:bg-green-700 text-sm sm:text-base font-medium rounded-lg shadow-sm"
+            className="px-5 py-3 sm:px-6 sm:py-3 bg-green-600 hover:bg-green-700 text-sm sm:text-base font-medium rounded-lg shadow-sm"
             onClick={handleLogin}
           >
             Login
           </Button>
         </div>
 
-        {/* Bottom Buttons */}
-        <div className="flex flex-col space-y-2 sm:space-y-3 w-full max-w-[260px] sm:max-w-[300px]">
+        {/* Bottom Buttons - Added more spacing */}
+        <div className="flex flex-col space-y-4 sm:space-y-5 w-full max-w-[280px] sm:max-w-[320px]">
           <Button
-            className="h-9 sm:h-10 bg-gradient-to-r from-cyan-400 to-cyan-500 hover:from-cyan-500 hover:to-cyan-600 text-white font-medium rounded-lg text-sm sm:text-base shadow-sm"
+            className="h-11 sm:h-12 bg-gradient-to-r from-cyan-400 to-cyan-500 hover:from-cyan-500 hover:to-cyan-600 text-white font-medium rounded-lg text-sm sm:text-base shadow-sm"
             onClick={handleCryptoSignup}
           >
             Signup with Crypto
           </Button>
-          <Button className="h-9 sm:h-10 bg-gradient-to-r from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-600 text-white font-medium rounded-lg text-sm sm:text-base shadow-sm">
+          <Button className="h-11 sm:h-12 bg-gradient-to-r from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-600 text-white font-medium rounded-lg text-sm sm:text-base shadow-sm">
             Other Method
           </Button>
         </div>

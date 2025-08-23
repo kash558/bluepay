@@ -25,10 +25,83 @@ interface Subscription {
   isActive: boolean
 }
 
+interface WithdrawalRecord {
+  id: number
+  amount: number
+  bank: string
+  accountNumber: string
+  accountName: string
+  date: string
+  status: string
+  reference: string
+}
+
 export default function DashboardPage() {
   const router = useRouter()
   const videoRef = useRef<HTMLVideoElement>(null)
-  const [balance, setBalance] = useState(6500)
+
+  // Get user name from localStorage
+  const [userName, setUserName] = useState(() => {
+    if (typeof window !== "undefined") {
+      const savedName = localStorage.getItem("cashtube_user_name")
+      return savedName || "Valid User"
+    }
+    return "Valid User"
+  })
+
+  // Initialize state with localStorage data or defaults
+  const [balance, setBalance] = useState(() => {
+    if (typeof window !== "undefined") {
+      const savedBalance = localStorage.getItem("cashtube_balance")
+      return savedBalance ? Number.parseInt(savedBalance) : 6500
+    }
+    return 6500
+  })
+
+  const [userActivity, setUserActivity] = useState<UserActivity>(() => {
+    if (typeof window !== "undefined") {
+      const savedActivity = localStorage.getItem("cashtube_user_activity")
+      if (savedActivity) {
+        return JSON.parse(savedActivity)
+      }
+    }
+    return {
+      videosWatched: 0,
+      totalEarnings: 0,
+      withdrawalsMade: 0,
+      lastActive: new Date().toISOString(),
+      joinDate: new Date().toISOString().split("T")[0],
+    }
+  })
+
+  const [withdrawalHistory, setWithdrawalHistory] = useState<WithdrawalRecord[]>(() => {
+    if (typeof window !== "undefined") {
+      const savedHistory = localStorage.getItem("cashtube_withdrawal_history")
+      return savedHistory ? JSON.parse(savedHistory) : []
+    }
+    return []
+  })
+
+  const [userSubscription, setUserSubscription] = useState<Subscription | null>(() => {
+    if (typeof window !== "undefined") {
+      const savedSubscription = localStorage.getItem("cashtube_subscription")
+      if (savedSubscription) {
+        const subscription = JSON.parse(savedSubscription)
+        // Check if subscription is still valid
+        const now = new Date()
+        const expiry = new Date(subscription.expiryDate)
+        if (now < expiry && subscription.isActive) {
+          return subscription
+        } else {
+          // Remove expired subscription
+          localStorage.removeItem("cashtube_subscription")
+          return null
+        }
+      }
+    }
+    return null
+  })
+
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
@@ -43,15 +116,6 @@ export default function DashboardPage() {
   const [showWithdrawalHistory, setShowWithdrawalHistory] = useState(false)
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false)
   const [toasts, setToasts] = useState<Toast[]>([])
-  const [withdrawalHistory, setWithdrawalHistory] = useState<any[]>([]) // Start with empty array
-  const [userActivity, setUserActivity] = useState<UserActivity>({
-    videosWatched: 0,
-    totalEarnings: 0,
-    withdrawalsMade: 0,
-    lastActive: new Date().toISOString(),
-    joinDate: new Date().toISOString().split("T")[0],
-  })
-  const [userSubscription, setUserSubscription] = useState<Subscription | null>(null)
   const [showPaymentForm, setShowPaymentForm] = useState(false)
   const [selectedPlan, setSelectedPlan] = useState<{
     type: "basic" | "smart" | "super"
@@ -65,6 +129,35 @@ export default function DashboardPage() {
     plan: any
     formData: any
   } | null>(null)
+
+  // Save data to localStorage whenever state changes
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("cashtube_balance", balance.toString())
+    }
+  }, [balance])
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("cashtube_user_activity", JSON.stringify(userActivity))
+    }
+  }, [userActivity])
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("cashtube_withdrawal_history", JSON.stringify(withdrawalHistory))
+    }
+  }, [withdrawalHistory])
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      if (userSubscription) {
+        localStorage.setItem("cashtube_subscription", JSON.stringify(userSubscription))
+      } else {
+        localStorage.removeItem("cashtube_subscription")
+      }
+    }
+  }, [userSubscription])
 
   // Nigerian Banks List
   const nigerianBanks = [
@@ -356,17 +449,18 @@ export default function DashboardPage() {
 
   const handleVideoEnded = () => {
     if (!hasWatchedVideo) {
-      setBalance((prev) => prev + 6000)
+      const earnings = 6000
+      setBalance((prev) => prev + earnings)
       setHasWatchedVideo(true)
       setIsPlaying(false)
 
       // Update user activity
       updateUserActivity({
         videosWatched: userActivity.videosWatched + 1,
-        totalEarnings: userActivity.totalEarnings + 6000,
+        totalEarnings: userActivity.totalEarnings + earnings,
       })
 
-      showSuccessToast("Video Completed!", "You earned ₦6,000 for watching this video!")
+      showSuccessToast("Video Completed!", `You earned ₦${earnings.toLocaleString()} for watching this video!`)
 
       setTimeout(() => {
         const nextIndex = Math.floor(Math.random() * videoUrls.length)
@@ -454,7 +548,7 @@ export default function DashboardPage() {
     setBalance((prev) => prev - amount)
 
     // Add to withdrawal history
-    const newWithdrawal = {
+    const newWithdrawal: WithdrawalRecord = {
       id: withdrawalHistory.length + 1,
       amount: amount,
       bank: selectedBank,
@@ -490,10 +584,10 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-gradient-to-br from-green-400 via-blue-500 to-purple-600 p-4">
       <ToastContainer toasts={toasts} onRemove={removeToast} />
 
-      {/* Header with User Activity */}
+      {/* Header with User Activity - Now shows personalized name */}
       <div className="flex justify-between items-start mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-black mb-1">Hello, Valid User</h1>
+          <h1 className="text-2xl font-bold text-black mb-1">Hello, {userName}</h1>
           <p className="text-lg text-gray-800">Good Day.</p>
           <div className="text-sm text-gray-700 mt-1">
             <p>
