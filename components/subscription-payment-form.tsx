@@ -74,69 +74,69 @@ export default function SubscriptionPaymentForm({
   if (!isOpen || !selectedPlan) return null
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-3 z-[60]">
-      <div className="relative w-full max-w-sm">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 z-[60]">
+      <div className="relative w-full max-w-xs">
         {/* Background matching the design */}
-        <div className="bg-gradient-to-br from-indigo-900 via-purple-900 to-indigo-800 rounded-2xl p-5 relative overflow-hidden shadow-lg max-h-[90vh] overflow-y-auto">
+        <div className="bg-gradient-to-br from-indigo-900 via-purple-900 to-indigo-800 rounded-xl p-4 relative overflow-hidden shadow-md max-h-[95vh] overflow-y-auto">
           {/* Close Button */}
           <Button
             onClick={onClose}
             variant="ghost"
             size="icon"
-            className="absolute top-3 right-3 text-white hover:bg-white/20 z-10 h-8 w-8"
+            className="absolute top-2 right-2 text-white hover:bg-white/20 z-10 h-6 w-6"
           >
-            <X className="h-5 w-5" />
+            <X className="h-4 w-4" />
           </Button>
 
           {/* Header */}
-          <div className="text-center mb-6">
-            <h1 className="text-2xl font-bold text-white mb-2">CashTube.com</h1>
+          <div className="text-center mb-4">
+            <h1 className="text-lg font-semibold text-white mb-1">CashTube.com</h1>
             {selectedPlan.duration && (
-              <p className="text-white/90 text-sm font-medium">
+              <p className="text-white/90 text-xs font-medium">
                 {selectedPlan.name} Plan - {selectedPlan.duration}
               </p>
             )}
-            {!selectedPlan.duration && <p className="text-white/90 text-sm font-medium">{selectedPlan.name}</p>}
+            {!selectedPlan.duration && <p className="text-white/90 text-xs font-medium">{selectedPlan.name}</p>}
           </div>
 
           {/* Payment Form */}
-          <div className="bg-white rounded-2xl p-5 shadow-lg">
-            <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="bg-white rounded-xl p-4 shadow-md">
+            <form onSubmit={handleSubmit} className="space-y-3">
               {/* Amount Field */}
               <div>
-                <label className="block text-gray-600 text-base font-semibold mb-2">Amount</label>
+                <label className="block text-gray-600 text-sm font-medium mb-1">Amount</label>
                 <Input
                   type="text"
                   value={`₦${selectedPlan.price.toLocaleString()}`}
                   readOnly
-                  className="w-full h-12 text-base font-semibold bg-gray-50 border-2 border-gray-200 rounded-lg px-4 text-center"
+                  className="w-full h-9 text-sm font-medium bg-gray-50 border border-gray-200 rounded-md px-3 text-center"
                 />
               </div>
 
               {/* Full Name Field */}
               <div>
-                <label className="block text-gray-600 text-base font-semibold mb-2">Full Name</label>
+                <label className="block text-gray-600 text-sm font-medium mb-1">Full Name</label>
                 <Input
                   type="text"
                   name="fullName"
                   value={formData.fullName}
                   onChange={handleInputChange}
                   placeholder="Your full name"
-                  className="w-full h-12 text-base font-medium border-2 border-gray-200 rounded-lg px-4"
+                  className="w-full h-9 text-sm font-medium border border-gray-200 rounded-md px-3"
                   required
                 />
               </div>
 
               {/* Email Field */}
               <div>
-                <label className="block text-gray-600 text-base font-semibold mb-2">Your Email Address</label>
+                <label className="block text-gray-600 text-sm font-medium mb-1">Your Email Address</label>
                 <Input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
                   placeholder="email address"
-                  className="w-full h-12 text-base font-medium border-2 border-gray-200 rounded-lg px-4"
+                  className="w-full h-9 text-sm font-medium border border-gray-200 rounded-md px-3"
                   required
                 />
               </div>
@@ -145,11 +145,11 @@ export default function SubscriptionPaymentForm({
               <Button
                 type="submit"
                 disabled={isProcessing}
-                className="w-full h-12 bg-indigo-800 hover:bg-indigo-900 text-white text-base font-semibold rounded-lg shadow-md"
+                className="w-full h-9 bg-indigo-800 hover:bg-indigo-900 text-white text-sm font-medium rounded-md shadow-sm"
               >
                 {isProcessing ? (
                   <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    <Loader2 className="h-3 w-3 mr-1 animate-spin" />
                     Processing...
                   </>
                 ) : (
@@ -159,15 +159,15 @@ export default function SubscriptionPaymentForm({
             </form>
 
             {/* Powered by Flutterwave */}
-            <div className="flex items-center justify-center mt-5 text-gray-600">
-              <span className="text-sm font-medium mr-2">Powered by</span>
+            <div className="flex items-center justify-center mt-3 text-gray-600">
+              <span className="text-xs font-medium mr-1">Powered by</span>
               <div className="flex items-center">
                 <img
                   src="/images/flutterwave-logo.jpeg"
                   alt="Flutterwave"
-                  className="w-6 h-6 rounded-md mr-2 object-cover"
+                  className="w-4 h-4 rounded-sm mr-1 object-cover"
                 />
-                <span className="text-sm font-semibold">flutterwave</span>
+                <span className="text-xs font-medium">flutterwave</span>
               </div>
             </div>
           </div>

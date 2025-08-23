@@ -87,45 +87,43 @@ export default function BankTransferModal({
   // Show payment not confirmed screen
   if (showPaymentNotConfirmed) {
     return (
-      <div className="fixed inset-0 bg-white z-[70]">
+      <div className="fixed inset-0 bg-white z-[70] overflow-y-auto">
         {/* Header */}
-        <div className="flex justify-between items-center p-4 sm:p-6 border-b border-gray-200">
-          <h1 className="text-2xl sm:text-3xl font-black text-gray-800">Bank Transfer</h1>
-          <Button onClick={onClose} variant="ghost" className="text-red-500 hover:text-red-600 font-bold text-lg">
+        <div className="flex justify-between items-center p-3 border-b border-gray-200">
+          <h1 className="text-lg font-semibold text-gray-800">Bank Transfer</h1>
+          <Button onClick={onClose} variant="ghost" className="text-red-500 hover:text-red-600 font-medium text-sm">
             Cancel
           </Button>
         </div>
 
         {/* Main Content */}
-        <div className="p-4 sm:p-8 max-w-lg mx-auto">
+        <div className="p-3 max-w-sm mx-auto">
           {/* Amount and Logo Section */}
-          <div className="flex justify-between items-start mb-8 sm:mb-12">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-indigo-800 rounded-full flex items-center justify-center">
-              <div className="text-white text-2xl sm:text-3xl font-black">₦</div>
+          <div className="flex justify-between items-start mb-6">
+            <div className="w-12 h-12 bg-indigo-800 rounded-full flex items-center justify-center">
+              <div className="text-white text-lg font-semibold">₦</div>
             </div>
             <div className="text-right">
-              <p className="text-3xl sm:text-4xl font-black text-gray-800">{bankDetails.amount}</p>
-              <p className="text-sm sm:text-base text-gray-600 mt-2 font-semibold">{userEmail}</p>
+              <p className="text-xl font-semibold text-gray-800">{bankDetails.amount}</p>
+              <p className="text-xs text-gray-600 mt-1 font-medium">{userEmail}</p>
             </div>
           </div>
 
           {/* Instructions */}
-          <div className="text-center mb-12 sm:mb-16">
-            <p className="text-lg sm:text-xl text-gray-800 font-bold mb-12 sm:mb-16">
-              Proceed to your bank app to complete this Transfer
-            </p>
+          <div className="text-center mb-8">
+            <p className="text-sm text-gray-800 font-medium mb-8">Proceed to your bank app to complete this Transfer</p>
 
             {/* Large Red X Circle */}
-            <div className="flex justify-center mb-8 sm:mb-12">
-              <div className="w-48 h-48 sm:w-56 sm:h-56 bg-red-500 rounded-full flex items-center justify-center shadow-2xl">
-                <X className="h-24 w-24 sm:h-28 sm:w-28 text-white stroke-[3]" />
+            <div className="flex justify-center mb-6">
+              <div className="w-32 h-32 bg-red-500 rounded-full flex items-center justify-center shadow-lg">
+                <X className="h-16 w-16 text-white stroke-[3]" />
               </div>
             </div>
 
             {/* Error Message */}
-            <h2 className="text-2xl sm:text-3xl font-black text-orange-500 mb-6 sm:mb-8">PAYMENT NOT CONFIRMED!</h2>
+            <h2 className="text-lg font-semibold text-orange-500 mb-4">PAYMENT NOT CONFIRMED!</h2>
 
-            <p className="text-gray-700 font-bold text-lg sm:text-xl mb-8 sm:mb-12">
+            <p className="text-gray-700 font-medium text-sm mb-6">
               Your payment wasn't confirmed. contact us on email for help
             </p>
 
@@ -135,16 +133,16 @@ export default function BankTransferModal({
                 type="text"
                 value={showPassword ? "FEE NOT CONFIRMED" : "••••••••••••••••"}
                 readOnly
-                className="w-full h-16 sm:h-20 text-lg sm:text-xl font-bold border-2 border-gray-300 rounded-2xl px-6 pr-16 text-center"
+                className="w-full h-10 text-sm font-medium border border-gray-300 rounded-md px-3 pr-10 text-center"
               />
               <Button
                 type="button"
                 variant="ghost"
                 size="icon"
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 h-10 w-10"
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 h-6 w-6"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? <EyeOff className="h-6 w-6" /> : <Eye className="h-6 w-6" />}
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </Button>
             </div>
           </div>
@@ -156,68 +154,66 @@ export default function BankTransferModal({
   // Show confirmation screen
   if (isConfirming) {
     return (
-      <div className="fixed inset-0 bg-white z-[70]">
+      <div className="fixed inset-0 bg-white z-[70] overflow-y-auto">
         {/* Header */}
-        <div className="flex justify-between items-center p-4 sm:p-6 border-b border-gray-200">
-          <h1 className="text-2xl sm:text-3xl font-black text-gray-800">Bank Transfer</h1>
-          <Button onClick={onClose} variant="ghost" className="text-red-500 hover:text-red-600 font-bold text-lg">
+        <div className="flex justify-between items-center p-3 border-b border-gray-200">
+          <h1 className="text-lg font-semibold text-gray-800">Bank Transfer</h1>
+          <Button onClick={onClose} variant="ghost" className="text-red-500 hover:text-red-600 font-medium text-sm">
             Cancel
           </Button>
         </div>
 
         {/* Main Content */}
-        <div className="p-4 sm:p-8 max-w-lg mx-auto">
+        <div className="p-3 max-w-sm mx-auto">
           {/* Amount and Logo Section */}
-          <div className="flex justify-between items-start mb-8 sm:mb-12">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-indigo-800 rounded-full flex items-center justify-center">
-              <div className="text-white text-2xl sm:text-3xl font-black">₦</div>
+          <div className="flex justify-between items-start mb-6">
+            <div className="w-12 h-12 bg-indigo-800 rounded-full flex items-center justify-center">
+              <div className="text-white text-lg font-semibold">₦</div>
             </div>
             <div className="text-right">
-              <p className="text-3xl sm:text-4xl font-black text-gray-800">{bankDetails.amount}</p>
-              <p className="text-sm sm:text-base text-gray-600 mt-2 font-semibold">{userEmail}</p>
+              <p className="text-xl font-semibold text-gray-800">{bankDetails.amount}</p>
+              <p className="text-xs text-gray-600 mt-1 font-medium">{userEmail}</p>
             </div>
           </div>
 
           {/* Instructions */}
-          <div className="text-center mb-12 sm:mb-16">
-            <p className="text-lg sm:text-xl text-gray-800 font-bold mb-8 sm:mb-12">
-              Proceed to your bank app to complete this Transfer
-            </p>
+          <div className="text-center mb-8">
+            <p className="text-sm text-gray-800 font-medium mb-6">Proceed to your bank app to complete this Transfer</p>
 
             {/* Main Loading Spinner */}
-            <div className="flex justify-center mb-6 sm:mb-8">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
+            <div className="flex justify-center mb-4">
+              <div className="w-12 h-12 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
             </div>
 
-            <p className="text-gray-700 font-bold text-lg sm:text-xl">Wait while we confirm your payment...</p>
+            <p className="text-gray-700 font-medium text-sm">Wait while we confirm your payment...</p>
           </div>
 
           {/* Status Cards */}
-          <div className="space-y-4 sm:space-y-6">
+          <div className="space-y-3">
             {/* Payment Made Status */}
-            <div className="bg-gray-100 rounded-2xl p-4 sm:p-6 flex justify-between items-center">
-              <span className="text-gray-800 font-bold text-lg sm:text-xl">Payment Made</span>
+            <div className="bg-gray-100 rounded-lg p-3 flex justify-between items-center">
+              <span className="text-gray-800 font-medium text-sm">Payment Made</span>
               <div className="flex items-center">
                 {paymentMadeConfirmed ? (
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-green-500 rounded-full flex items-center justify-center">
-                    <Check className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
+                  <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                    <Check className="h-4 w-4 text-white" />
                   </div>
                 ) : (
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 border-2 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
+                  <div className="w-6 h-6 border-2 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
                 )}
               </div>
             </div>
 
             {/* Confirming Payment Status */}
-            <div className="bg-gray-100 rounded-2xl p-4 sm:p-6 flex justify-between items-center">
-              <span className="text-gray-800 font-bold text-lg sm:text-xl">Confirming Payment</span>
+            <div className="bg-gray-100 rounded-lg p-3 flex justify-between items-center">
+              <span className="text-gray-800 font-medium text-sm">Confirming Payment</span>
               <div className="flex items-center">
                 {confirmingPaymentConfirmed ? (
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-green-500 rounded-full flex items-center justify-center">
-                    <Check className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
+                  <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                    <Check className="h-4 w-4 text-white" />
                   </div>
                 ) : (
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 border-2 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
+                  <div className="w-6 h-6 border-2 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
                 )}
               </div>
             </div>
@@ -229,93 +225,89 @@ export default function BankTransferModal({
 
   // Show normal bank transfer form
   return (
-    <div className="fixed inset-0 bg-white z-[70]">
+    <div className="fixed inset-0 bg-white z-[70] overflow-y-auto">
       {/* Header */}
-      <div className="flex justify-between items-center p-4 sm:p-6 border-b border-gray-200">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
-          <h1 className="text-2xl sm:text-3xl font-black text-gray-800">Bank Transfer</h1>
-          <span className="text-sm sm:text-base text-gray-600 font-semibold">{userEmail}</span>
+      <div className="flex justify-between items-center p-3 border-b border-gray-200">
+        <div className="flex flex-col">
+          <h1 className="text-lg font-semibold text-gray-800">Bank Transfer</h1>
+          <span className="text-xs text-gray-600 font-medium">{userEmail}</span>
         </div>
-        <Button onClick={onClose} variant="ghost" className="text-red-500 hover:text-red-600 font-bold text-lg">
+        <Button onClick={onClose} variant="ghost" className="text-red-500 hover:text-red-600 font-medium text-sm">
           Cancel
         </Button>
       </div>
 
       {/* Main Content */}
-      <div className="p-4 sm:p-8 max-w-lg mx-auto">
+      <div className="p-3 max-w-sm mx-auto">
         {/* Amount and Logo Section */}
-        <div className="flex justify-between items-start mb-8 sm:mb-12">
-          <div className="w-16 h-16 sm:w-20 sm:h-20 bg-indigo-800 rounded-full flex items-center justify-center">
-            <div className="text-white text-2xl sm:text-3xl font-black">₦</div>
+        <div className="flex justify-between items-start mb-6">
+          <div className="w-12 h-12 bg-indigo-800 rounded-full flex items-center justify-center">
+            <div className="text-white text-lg font-semibold">₦</div>
           </div>
           <div className="text-right">
-            <p className="text-3xl sm:text-4xl font-black text-gray-800">{bankDetails.amount}</p>
-            <p className="text-sm sm:text-base text-gray-600 mt-2 font-semibold">{userEmail}</p>
+            <p className="text-xl font-semibold text-gray-800">{bankDetails.amount}</p>
+            <p className="text-xs text-gray-600 mt-1 font-medium">{userEmail}</p>
           </div>
         </div>
 
         {/* Instructions */}
-        <div className="text-center mb-8 sm:mb-12">
-          <p className="text-lg sm:text-xl text-gray-800 font-bold mb-4">
-            Proceed to your bank app to complete this Transfer
-          </p>
-          <p className="text-sm sm:text-base text-gray-600 font-semibold">{planName} Plan Subscription Payment</p>
+        <div className="text-center mb-6">
+          <p className="text-sm text-gray-800 font-medium mb-2">Proceed to your bank app to complete this Transfer</p>
+          <p className="text-xs text-gray-600 font-medium">{planName} Plan Subscription Payment</p>
         </div>
 
         {/* Bank Details Card */}
-        <div className="border-2 border-gray-300 rounded-3xl p-6 sm:p-8 mb-6 sm:mb-8 bg-gray-50 shadow-lg">
+        <div className="border border-gray-300 rounded-lg p-4 mb-4 bg-gray-50 shadow-sm">
           {/* Amount */}
-          <div className="flex justify-between items-center mb-6 pb-6 border-b-2 border-gray-200">
+          <div className="flex justify-between items-center mb-3 pb-3 border-b border-gray-200">
             <div>
-              <p className="text-sm sm:text-base text-gray-600 font-semibold">Amount</p>
-              <p className="text-2xl sm:text-3xl font-black text-gray-800">{bankDetails.amount}</p>
+              <p className="text-xs text-gray-600 font-medium">Amount</p>
+              <p className="text-lg font-semibold text-gray-800">{bankDetails.amount}</p>
             </div>
             <Button
               onClick={() => handleCopy(amount.toString(), "amount")}
-              className="bg-orange-500 hover:bg-orange-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl text-sm sm:text-base font-bold"
+              className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 rounded-md text-xs font-medium"
             >
               {copiedAmount ? "Copied!" : "Copy"}
             </Button>
           </div>
 
           {/* Account Number */}
-          <div className="flex justify-between items-center mb-6 pb-6 border-b-2 border-gray-200">
+          <div className="flex justify-between items-center mb-3 pb-3 border-b border-gray-200">
             <div>
-              <p className="text-sm sm:text-base text-gray-600 font-semibold">Account Number</p>
-              <p className="text-2xl sm:text-3xl font-black text-gray-800">{bankDetails.accountNumber}</p>
+              <p className="text-xs text-gray-600 font-medium">Account Number</p>
+              <p className="text-lg font-semibold text-gray-800">{bankDetails.accountNumber}</p>
             </div>
             <Button
               onClick={() => handleCopy(bankDetails.accountNumber, "account")}
-              className="bg-orange-500 hover:bg-orange-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl text-sm sm:text-base font-bold"
+              className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 rounded-md text-xs font-medium"
             >
               {copiedAccount ? "Copied!" : "Copy"}
             </Button>
           </div>
 
           {/* Bank Name */}
-          <div className="mb-6 pb-6 border-b-2 border-gray-200">
-            <p className="text-sm sm:text-base text-gray-600 font-semibold">Bank Name</p>
-            <p className="text-2xl sm:text-3xl font-black text-gray-800">{bankDetails.bankName}</p>
+          <div className="mb-3 pb-3 border-b border-gray-200">
+            <p className="text-xs text-gray-600 font-medium">Bank Name</p>
+            <p className="text-lg font-semibold text-gray-800">{bankDetails.bankName}</p>
           </div>
 
           {/* Account Name */}
           <div>
-            <p className="text-sm sm:text-base text-gray-600 font-semibold">Account Name</p>
-            <p className="text-2xl sm:text-3xl font-black text-gray-800">{bankDetails.accountName}</p>
+            <p className="text-xs text-gray-600 font-medium">Account Name</p>
+            <p className="text-lg font-semibold text-gray-800">{bankDetails.accountName}</p>
           </div>
         </div>
 
         {/* Bottom Instructions */}
-        <div className="text-center mb-6 sm:mb-8">
-          <p className="text-gray-700 font-bold text-lg sm:text-xl">
-            Pay to this specific account and get your access code
-          </p>
+        <div className="text-center mb-4">
+          <p className="text-gray-700 font-medium text-sm">Pay to this specific account and get your access code</p>
         </div>
 
         {/* Confirmation Button */}
         <Button
           onClick={handlePaymentConfirmation}
-          className="w-full bg-orange-500 hover:bg-orange-600 text-white py-4 sm:py-6 text-xl sm:text-2xl font-black rounded-2xl shadow-2xl transform transition-all duration-200 hover:scale-105"
+          className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 text-sm font-medium rounded-lg shadow-sm"
         >
           I have made this bank payment
         </Button>

@@ -167,51 +167,56 @@ export default function CashTubePage() {
         </div>
       )}
 
-      {/* Header */}
+      {/* Header - Menu button moved back to top left and made extra bold */}
       <div className="flex justify-start p-2">
-        <Button variant="ghost" size="icon" className="text-blue-600" onClick={() => setShowMobileMenu(true)}>
-          <Menu className="h-5 w-5" />
+        <Button
+          variant="ghost"
+          size="icon"
+          className="text-blue-600 font-black hover:bg-blue-50"
+          onClick={() => setShowMobileMenu(true)}
+        >
+          <Menu className="h-6 w-6 font-black" strokeWidth={4} />
         </Button>
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col items-center justify-center px-4 space-y-6">
+      <div className="flex-1 flex flex-col items-center justify-center px-4 space-y-5">
         {/* Logo */}
         <div className="relative">
-          <div className="w-20 h-20 bg-gradient-to-r from-pink-500 to-pink-600 rounded-full flex items-center justify-center shadow-lg">
+          <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-pink-500 to-pink-600 rounded-full flex items-center justify-center shadow-lg">
             <div className="flex items-center space-x-1">
-              <Play className="h-6 w-6 text-white fill-white" />
-              <DollarSign className="h-6 w-6 text-white" />
+              <Play className="h-5 w-5 sm:h-6 sm:w-6 text-white fill-white" />
+              <DollarSign className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
             </div>
           </div>
         </div>
 
         {/* Welcome Text */}
-        <div className="text-center space-y-2">
-          <h4 className="text-2xl font-bold text-gray-800">Welcome To</h4>
-          <h4 className="text-xl font-bold text-pink-500">CashTube2025</h4>
-          <p className="text-base text-gray-700 font-semibold">{"Enter (5) digit code"}</p>
+        <div className="text-center space-y-1">
+          <h4 className="text-xl sm:text-2xl font-semibold text-gray-800">Welcome To</h4>
+          <h4 className="text-lg sm:text-xl font-semibold text-pink-500">CashTube2025</h4>
+          <p className="text-sm sm:text-base text-gray-700 font-medium">{"Enter (5) digit code"}</p>
         </div>
 
         {/* Code Input */}
-        <div className="w-full max-w-[200px]">
+        <div className="w-full max-w-[180px] sm:max-w-[200px]">
           <Input
             type="password"
             value={code}
             readOnly
-            className="text-center text-xl font-semibold h-12 border-2 border-gray-300 rounded-xl shadow-sm"
+            className="text-center text-lg sm:text-xl font-medium h-10 sm:h-12 border-2 border-gray-300 rounded-lg shadow-sm"
             placeholder=""
           />
         </div>
 
         {/* Number Pad */}
-        <div className="grid grid-cols-3 gap-3 max-w-[200px]">
+        <div className="grid grid-cols-3 gap-2 sm:gap-3 max-w-[180px] sm:max-w-[200px]">
           {numbers.map((num) => (
             <Button
               key={num}
               variant="outline"
               size="lg"
-              className="h-12 w-16 text-lg font-semibold border-2 border-gray-300 hover:bg-gray-100 bg-white shadow-sm rounded-xl"
+              className="h-10 w-14 sm:h-12 sm:w-16 text-lg sm:text-xl font-medium border-2 border-gray-300 hover:bg-gray-100 bg-white shadow-sm rounded-lg"
               onClick={() => handleNumberClick(num)}
             >
               {num}
@@ -220,23 +225,23 @@ export default function CashTubePage() {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex space-x-3">
+        <div className="flex space-x-2 sm:space-x-3">
           <Button
             variant="destructive"
-            className="px-5 py-2 bg-red-500 hover:bg-red-600 text-base font-semibold rounded-xl shadow-sm"
+            className="px-4 py-2 sm:px-5 sm:py-2 bg-red-500 hover:bg-red-600 text-sm sm:text-base font-medium rounded-lg shadow-sm"
             onClick={handleSignUp}
           >
             Sign Up
           </Button>
           <Button
             variant="outline"
-            className="px-5 py-2 border-2 border-gray-300 text-gray-700 hover:bg-gray-100 bg-white text-base font-semibold rounded-xl shadow-sm"
+            className="px-4 py-2 sm:px-5 sm:py-2 border-2 border-gray-300 text-gray-700 hover:bg-gray-100 bg-white text-sm sm:text-base font-medium rounded-lg shadow-sm"
             onClick={handleClear}
           >
             Clear
           </Button>
           <Button
-            className="px-5 py-2 bg-green-600 hover:bg-green-700 text-base font-semibold rounded-xl shadow-sm"
+            className="px-4 py-2 sm:px-5 sm:py-2 bg-green-600 hover:bg-green-700 text-sm sm:text-base font-medium rounded-lg shadow-sm"
             onClick={handleLogin}
           >
             Login
@@ -244,14 +249,14 @@ export default function CashTubePage() {
         </div>
 
         {/* Bottom Buttons */}
-        <div className="flex flex-col space-y-3 w-full max-w-[280px]">
+        <div className="flex flex-col space-y-2 sm:space-y-3 w-full max-w-[260px] sm:max-w-[300px]">
           <Button
-            className="h-11 bg-gradient-to-r from-cyan-400 to-cyan-500 hover:from-cyan-500 hover:to-cyan-600 text-white font-semibold rounded-xl text-base shadow-sm"
+            className="h-9 sm:h-10 bg-gradient-to-r from-cyan-400 to-cyan-500 hover:from-cyan-500 hover:to-cyan-600 text-white font-medium rounded-lg text-sm sm:text-base shadow-sm"
             onClick={handleCryptoSignup}
           >
             Signup with Crypto
           </Button>
-          <Button className="h-11 bg-gradient-to-r from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-600 text-white font-semibold rounded-xl text-base shadow-sm">
+          <Button className="h-9 sm:h-10 bg-gradient-to-r from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-600 text-white font-medium rounded-lg text-sm sm:text-base shadow-sm">
             Other Method
           </Button>
         </div>
@@ -260,18 +265,18 @@ export default function CashTubePage() {
       {/* Initial Welcome Modal (on site access) */}
       {showInitialWelcome && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-3 z-50">
-          <div className="bg-gray-200 rounded-2xl p-5 max-w-xs w-full relative animate-in zoom-in duration-300 shadow-lg">
+          <div className="bg-gray-200 rounded-xl p-4 max-w-xs w-full relative animate-in zoom-in duration-300 shadow-md">
             <Button
               variant="ghost"
               size="icon"
-              className="absolute top-3 right-3 text-gray-600 hover:text-gray-800 h-6 w-6"
+              className="absolute top-2 right-2 text-gray-600 hover:text-gray-800 h-6 w-6"
               onClick={() => setShowInitialWelcome(false)}
             >
               <X className="h-4 w-4" />
             </Button>
             <div className="text-center space-y-3 mt-2">
-              <h2 className="text-xl font-bold text-red-600">Welcome to Cash Tube2025</h2>
-              <div className="space-y-3 text-gray-700">
+              <h2 className="text-lg font-semibold text-red-600">Welcome to Cash Tube2025</h2>
+              <div className="space-y-2 text-gray-700">
                 <p className="text-sm font-medium leading-relaxed">
                   If you have been looking for where to earn money by just watching ads video's.
                 </p>
@@ -287,20 +292,20 @@ export default function CashTubePage() {
       {/* Invalid Passcode Modal */}
       {showInvalidModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-3 z-50">
-          <div className="bg-white rounded-2xl p-5 max-w-xs w-full relative animate-in zoom-in duration-300 shadow-lg">
-            <div className="flex flex-col items-center justify-center space-y-5">
+          <div className="bg-white rounded-xl p-4 max-w-xs w-full relative animate-in zoom-in duration-300 shadow-md">
+            <div className="flex flex-col items-center justify-center space-y-4">
               {/* Error Icon */}
-              <div className="w-20 h-20 rounded-full border-4 border-red-400 flex items-center justify-center">
-                <X className="h-10 w-10 text-red-400" />
+              <div className="w-16 h-16 rounded-full border-4 border-red-400 flex items-center justify-center">
+                <X className="h-8 w-8 text-red-400" />
               </div>
               {/* Error Message */}
               <div className="text-center space-y-1">
-                <h2 className="text-2xl font-bold text-gray-700">Oops...</h2>
-                <p className="text-lg font-semibold text-gray-600">invalid Passcode!</p>
+                <h2 className="text-xl font-semibold text-gray-700">Oops...</h2>
+                <p className="text-base font-medium text-gray-600">invalid Passcode!</p>
               </div>
               {/* OK Button */}
               <Button
-                className="w-28 h-10 bg-indigo-500 hover:bg-indigo-600 text-white text-base font-semibold rounded-lg shadow-sm"
+                className="w-24 h-9 bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-medium rounded-lg shadow-sm"
                 onClick={closeInvalidModal}
               >
                 OK
@@ -308,7 +313,7 @@ export default function CashTubePage() {
               {/* Buy Passcode Link */}
               <div className="pt-3 border-t border-gray-200 w-full text-center">
                 <button
-                  className="text-orange-500 hover:text-orange-600 text-base font-semibold"
+                  className="text-orange-500 hover:text-orange-600 text-sm font-medium"
                   onClick={handleBuyPasscode}
                 >
                   Buy Passcode?
