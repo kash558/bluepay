@@ -3,9 +3,27 @@
 import type React from "react"
 import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
-import { Play, Pause, Volume2, Maximize, MoreVertical, LogOut, X } from "lucide-react"
+import { Play, Pause, Volume2, Maximize, MoreVertical, LogOut, X, CreditCard } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { ToastContainer, type Toast } from "@/components/toast"
+import SubscriptionPaymentForm from "@/components/subscription-payment-form"
+import BankTransferModal from "@/components/bank-transfer-modal"
+
+interface UserActivity {
+  videosWatched: number
+  totalEarnings: number
+  withdrawalsMade: number
+  lastActive: string
+  joinDate: string
+}
+
+interface Subscription {
+  type: "basic" | "smart" | "super"
+  code: string
+  expiryDate: string
+  isActive: boolean
+}
 
 export default function DashboardPage() {
   const router = useRouter()
@@ -23,28 +41,30 @@ export default function DashboardPage() {
   const [accountName, setAccountName] = useState("")
   const [withdrawalCode, setWithdrawalCode] = useState("")
   const [showWithdrawalHistory, setShowWithdrawalHistory] = useState(false)
-  const [withdrawalHistory, setWithdrawalHistory] = useState([
-    {
-      id: 1,
-      amount: 5000,
-      bank: "Guaranty Trust Bank (GTBank)",
-      accountNumber: "0123456789",
-      accountName: "John Doe",
-      date: "2024-01-15",
-      status: "Completed",
-      reference: "WD001234",
-    },
-    {
-      id: 2,
-      amount: 3000,
-      bank: "Access Bank",
-      accountNumber: "0987654321",
-      accountName: "John Doe",
-      date: "2024-01-10",
-      status: "Pending",
-      reference: "WD001235",
-    },
-  ])
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false)
+  const [toasts, setToasts] = useState<Toast[]>([])
+  const [withdrawalHistory, setWithdrawalHistory] = useState<any[]>([]) // Start with empty array
+  const [userActivity, setUserActivity] = useState<UserActivity>({
+    videosWatched: 0,
+    totalEarnings: 0,
+    withdrawalsMade: 0,
+    lastActive: new Date().toISOString(),
+    joinDate: new Date().toISOString().split("T")[0],
+  })
+  const [userSubscription, setUserSubscription] = useState<Subscription | null>(null)
+  const [showPaymentForm, setShowPaymentForm] = useState(false)
+  const [selectedPlan, setSelectedPlan] = useState<{
+    type: "basic" | "smart" | "super"
+    name: string
+    price: number
+    duration: string
+    description: string
+  } | null>(null)
+  const [showBankTransferModal, setShowBankTransferModal] = useState(false)
+  const [pendingSubscription, setPendingSubscription] = useState<{
+    plan: any
+    formData: any
+  } | null>(null)
 
   // Nigerian Banks List
   const nigerianBanks = [
@@ -126,7 +146,7 @@ export default function DashboardPage() {
     "Xpress Payments Microfinance Bank",
   ]
 
-  // Sample video URLs (you can replace with actual video URLs)
+  // Sample video URLs
   const videoUrls = [
     "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
     "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
@@ -134,6 +154,172 @@ export default function DashboardPage() {
     "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
     "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
   ]
+
+  // Subscription plans
+  const subscriptionPlans = [
+    {
+      type: "basic" as const,
+      name: "Basic",
+      price: 6500,
+      duration: "1 Day",
+      description: "Withdrawal access for 24 hours",
+      color: "bg-blue-500",
+    },
+    {
+      type: "smart" as const,
+      name: "Smart",
+      price: 10500,
+      duration: "1 Week",
+      description: "Withdrawal access for 7 days",
+      color: "bg-purple-500",
+    },
+    {
+      type: "super" as const,
+      name: "Super",
+      price: 20000,
+      duration: "1 Month",
+      description: "Withdrawal access for 30 days",
+      color: "bg-gold-500",
+    },
+  ]
+
+  // Toast functions
+  const addToast = (toast: Omit<Toast, "id">) => {
+    const id = Date.now().toString()
+    setToasts((prev) => [...prev, { ...toast, id }])
+  }
+
+  const removeToast = (id: string) => {
+    setToasts((prev) => prev.filter((toast) => toast.id !== id))
+  }
+
+  const showSuccessToast = (title: string, message: string) => {
+    addToast({ type: "success", title, message })
+  }
+
+  const showErrorToast = (title: string, message: string) => {
+    addToast({ type: "error", title, message })
+  }
+
+  const showWarningToast = (title: string, message: string) => {
+    addToast({ type: "warning", title, message })
+  }
+
+  const showInfoToast = (title: string, message: string) => {
+    addToast({ type: "info", title, message })
+  }
+
+  // Check if subscription is active
+  const isSubscriptionActive = () => {
+    if (!userSubscription) return false
+    const now = new Date()
+    const expiry = new Date(userSubscription.expiryDate)
+    return now < expiry && userSubscription.isActive
+  }
+
+  // Generate withdrawal code
+  const generateWithdrawalCode = () => {
+    return Math.floor(100000 + Math.random() * 900000).toString()
+  }
+
+  // Handle plan selection
+  const handlePlanSelection = (planType: "basic" | "smart" | "super") => {
+    const plan = subscriptionPlans.find((p) => p.type === planType)
+    if (!plan) return
+
+    setSelectedPlan(plan)
+    setShowSubscriptionModal(false)
+    setShowPaymentForm(true)
+  }
+
+  // Handle payment complete
+  const handlePaymentComplete = (planType: "basic" | "smart" | "super", formData: any) => {
+    const plan = subscriptionPlans.find((p) => p.type === planType)
+    if (!plan) return
+
+    // Store pending subscription data
+    setPendingSubscription({ plan, formData })
+
+    // Close payment form and show bank transfer
+    setShowPaymentForm(false)
+    setShowBankTransferModal(true)
+  }
+
+  // Handle bank transfer confirmation
+  const handleBankTransferConfirmed = () => {
+    if (!pendingSubscription) return
+
+    const { plan, formData } = pendingSubscription
+
+    // Calculate expiry date
+    const now = new Date()
+    let expiryDate: Date
+    switch (plan.type) {
+      case "basic":
+        expiryDate = new Date(now.getTime() + 24 * 60 * 60 * 1000) // 1 day
+        break
+      case "smart":
+        expiryDate = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000) // 7 days
+        break
+      case "super":
+        expiryDate = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000) // 30 days
+        break
+    }
+
+    // Create subscription
+    const newSubscription: Subscription = {
+      type: plan.type,
+      code: generateWithdrawalCode(),
+      expiryDate: expiryDate.toISOString(),
+      isActive: true,
+    }
+
+    setUserSubscription(newSubscription)
+    setShowBankTransferModal(false)
+    setPendingSubscription(null)
+
+    showSuccessToast(
+      "Payment Confirmed!",
+      `Your ${plan.name} plan is now active. Withdrawal code: ${newSubscription.code}`,
+    )
+
+    // Update user activity
+    setUserActivity((prev) => ({
+      ...prev,
+      lastActive: new Date().toISOString(),
+    }))
+  }
+
+  // Update user activity tracking
+  const updateUserActivity = (activity: Partial<UserActivity>) => {
+    setUserActivity((prev) => ({
+      ...prev,
+      ...activity,
+      lastActive: new Date().toISOString(),
+    }))
+  }
+
+  // Simulate withdrawal status changes for real transactions only
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setWithdrawalHistory((prev) => {
+        const updated = prev.map((withdrawal) => {
+          if (withdrawal.status === "Processing" && Math.random() > 0.8) {
+            const newStatus = "Completed"
+            showSuccessToast(
+              "Withdrawal Completed",
+              `Your withdrawal of ₦${withdrawal.amount.toLocaleString()} has been completed successfully!`,
+            )
+            return { ...withdrawal, status: newStatus }
+          }
+          return withdrawal
+        })
+        return updated
+      })
+    }, 15000) // Check every 15 seconds
+
+    return () => clearInterval(interval)
+  }, [])
 
   const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60)
@@ -174,9 +360,15 @@ export default function DashboardPage() {
       setHasWatchedVideo(true)
       setIsPlaying(false)
 
-      // Show earning notification
+      // Update user activity
+      updateUserActivity({
+        videosWatched: userActivity.videosWatched + 1,
+        totalEarnings: userActivity.totalEarnings + 6000,
+      })
+
+      showSuccessToast("Video Completed!", "You earned ₦6,000 for watching this video!")
+
       setTimeout(() => {
-        // Load next random video
         const nextIndex = Math.floor(Math.random() * videoUrls.length)
         setCurrentVideoIndex(nextIndex)
         setHasWatchedVideo(false)
@@ -197,7 +389,10 @@ export default function DashboardPage() {
   }
 
   const handleLogout = () => {
-    router.push("/")
+    showInfoToast("Logged Out", "You have been successfully logged out.")
+    setTimeout(() => {
+      router.push("/")
+    }, 1000)
   }
 
   const handleFullscreen = () => {
@@ -221,32 +416,37 @@ export default function DashboardPage() {
 
     // Validation
     if (!withdrawalAmount || amount <= 0) {
-      alert("Please enter a valid withdrawal amount!")
+      showErrorToast("Invalid Amount", "Please enter a valid withdrawal amount!")
       return
     }
 
     if (amount > balance) {
-      alert("Insufficient balance!")
+      showErrorToast("Insufficient Balance", "You don't have enough balance for this withdrawal!")
       return
     }
 
     if (!selectedBank) {
-      alert("Please select your bank!")
+      showErrorToast("Bank Required", "Please select your bank!")
       return
     }
 
     if (!accountNumber || accountNumber.length < 10) {
-      alert("Please enter a valid account number!")
+      showErrorToast("Invalid Account", "Please enter a valid account number!")
       return
     }
 
     if (!accountName.trim()) {
-      alert("Please enter your account name!")
+      showErrorToast("Account Name Required", "Please enter your account name!")
       return
     }
 
-    if (withdrawalCode !== "202512") {
-      alert("Invalid withdrawal code!")
+    if (!isSubscriptionActive()) {
+      showErrorToast("No Active Subscription", "You need an active subscription to make withdrawals!")
+      return
+    }
+
+    if (withdrawalCode !== userSubscription?.code) {
+      showErrorToast("Invalid Code", "Invalid withdrawal code! Use the code from your active subscription.")
       return
     }
 
@@ -268,11 +468,19 @@ export default function DashboardPage() {
     setWithdrawalHistory((prev) => [newWithdrawal, ...prev])
     setShowWithdrawalModal(false)
     resetWithdrawalForm()
-    alert(`₦${amount.toLocaleString()} withdrawal request submitted successfully to ${selectedBank}!`)
+
+    // Update user activity
+    updateUserActivity({
+      withdrawalsMade: userActivity.withdrawalsMade + 1,
+    })
+
+    showSuccessToast(
+      "Withdrawal Submitted",
+      `Your withdrawal request of ₦${amount.toLocaleString()} has been submitted successfully!`,
+    )
   }
 
   useEffect(() => {
-    // Reset video state when video changes
     setCurrentTime(0)
     setIsPlaying(false)
     setHasWatchedVideo(false)
@@ -280,11 +488,24 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-400 via-blue-500 to-purple-600 p-4">
-      {/* Header */}
+      <ToastContainer toasts={toasts} onRemove={removeToast} />
+
+      {/* Header with User Activity */}
       <div className="flex justify-between items-start mb-6">
         <div>
           <h1 className="text-2xl font-bold text-black mb-1">Hello, Valid User</h1>
           <p className="text-lg text-gray-800">Good Day.</p>
+          <div className="text-sm text-gray-700 mt-1">
+            <p>
+              Videos Watched: {userActivity.videosWatched} | Total Earned: ₦
+              {userActivity.totalEarnings.toLocaleString()}
+            </p>
+            {userSubscription && isSubscriptionActive() && (
+              <p className="text-green-700 font-medium">
+                Active: {userSubscription.type.toUpperCase()} Plan (Code: {userSubscription.code})
+              </p>
+            )}
+          </div>
         </div>
         <Button onClick={handleLogout} variant="ghost" size="icon" className="text-black hover:bg-white/20">
           <LogOut className="h-5 w-5" />
@@ -346,7 +567,6 @@ export default function DashboardPage() {
             <div className="flex items-center space-x-3 text-white">
               <span className="text-sm font-mono">{formatTime(currentTime)}</span>
 
-              {/* Progress Bar */}
               <div className="flex-1 h-1 bg-white/30 rounded-full cursor-pointer relative" onClick={handleSeek}>
                 <div
                   className="h-full bg-white rounded-full relative"
@@ -376,7 +596,6 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Earning Info */}
         <div className="mt-4 text-center">
           <p className="text-black font-medium">Complete watching this video to earn ₦6,000!</p>
           {hasWatchedVideo && (
@@ -407,7 +626,6 @@ export default function DashboardPage() {
             <p className="text-gray-600 mb-4">Available Balance: {formatBalance(balance)}</p>
 
             <div className="space-y-4">
-              {/* Withdrawal Amount */}
               <div>
                 <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-2">
                   Withdrawal Amount (₦) *
@@ -423,7 +641,6 @@ export default function DashboardPage() {
                 />
               </div>
 
-              {/* Bank Selection */}
               <div>
                 <label htmlFor="bank" className="block text-sm font-medium text-gray-700 mb-2">
                   Select Bank *
@@ -444,7 +661,6 @@ export default function DashboardPage() {
                 </select>
               </div>
 
-              {/* Account Number */}
               <div>
                 <label htmlFor="accountNumber" className="block text-sm font-medium text-gray-700 mb-2">
                   Account Number *
@@ -461,7 +677,6 @@ export default function DashboardPage() {
                 />
               </div>
 
-              {/* Account Name */}
               <div>
                 <label htmlFor="accountName" className="block text-sm font-medium text-gray-700 mb-2">
                   Account Name *
@@ -477,7 +692,6 @@ export default function DashboardPage() {
                 />
               </div>
 
-              {/* Withdrawal Code */}
               <div>
                 <label htmlFor="withdrawalCode" className="block text-sm font-medium text-gray-700 mb-2">
                   Withdrawal Code *
@@ -491,7 +705,17 @@ export default function DashboardPage() {
                   className="w-full"
                   required
                 />
-                <p className="text-xs text-gray-500 mt-1">Contact support to get your withdrawal code</p>
+                <div className="mt-2">
+                  <Button
+                    onClick={() => setShowSubscriptionModal(true)}
+                    variant="outline"
+                    size="sm"
+                    className="w-full bg-blue-50 hover:bg-blue-100 text-blue-600 border-blue-200"
+                  >
+                    <CreditCard className="h-4 w-4 mr-2" />
+                    Get Code
+                  </Button>
+                </div>
               </div>
             </div>
 
@@ -514,6 +738,68 @@ export default function DashboardPage() {
         </div>
       )}
 
+      {/* Subscription Modal */}
+      {showSubscriptionModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-bold text-gray-800">Get Withdrawal Code</h3>
+              <Button
+                onClick={() => setShowSubscriptionModal(false)}
+                variant="ghost"
+                size="icon"
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+
+            <p className="text-gray-600 mb-6">Choose a subscription plan to get your withdrawal code:</p>
+
+            <div className="space-y-4">
+              {subscriptionPlans.map((plan) => (
+                <div
+                  key={plan.type}
+                  className="border border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-colors"
+                >
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <h4 className="text-lg font-semibold text-gray-800">{plan.name}</h4>
+                      <p className="text-sm text-gray-600">{plan.description}</p>
+                      <p className="text-sm text-blue-600 font-medium">{plan.duration}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xl font-bold text-gray-800">₦{plan.price.toLocaleString()}</p>
+                    </div>
+                  </div>
+                  <Button
+                    onClick={() => handlePlanSelection(plan.type)}
+                    className={`w-full mt-3 ${plan.color} hover:opacity-90 text-white`}
+                  >
+                    Select Plan
+                  </Button>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-6 text-center">
+              <p className="text-sm text-gray-500">Your current balance: {formatBalance(balance)}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Subscription Payment Form */}
+      <SubscriptionPaymentForm
+        isOpen={showPaymentForm}
+        onClose={() => {
+          setShowPaymentForm(false)
+          setSelectedPlan(null)
+        }}
+        selectedPlan={selectedPlan}
+        onPaymentComplete={handlePaymentComplete}
+      />
+
       {/* Withdrawal History Modal */}
       {showWithdrawalHistory && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -532,7 +818,10 @@ export default function DashboardPage() {
 
             {withdrawalHistory.length === 0 ? (
               <div className="text-center py-8">
-                <p className="text-gray-500">No withdrawal history found</p>
+                <p className="text-gray-500">No withdrawal transactions found</p>
+                <p className="text-sm text-gray-400 mt-2">
+                  Your withdrawal history will appear here after you make transactions
+                </p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -583,6 +872,19 @@ export default function DashboardPage() {
           </div>
         </div>
       )}
+
+      {/* Bank Transfer Modal */}
+      <BankTransferModal
+        isOpen={showBankTransferModal}
+        onClose={() => {
+          setShowBankTransferModal(false)
+          setPendingSubscription(null)
+        }}
+        userEmail={pendingSubscription?.formData?.email || ""}
+        amount={pendingSubscription?.plan?.price || 0}
+        planName={pendingSubscription?.plan?.name || ""}
+        onPaymentConfirmed={handleBankTransferConfirmed}
+      />
     </div>
   )
 }
