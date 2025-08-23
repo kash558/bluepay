@@ -175,43 +175,43 @@ export default function CashTubePage() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col items-center justify-center px-4 space-y-8 sm:space-y-10">
+      <div className="flex-1 flex flex-col items-center justify-center px-4 space-y-6">
         {/* Logo */}
         <div className="relative">
-          <div className="w-28 h-28 sm:w-32 sm:h-32 bg-gradient-to-r from-pink-500 to-pink-600 rounded-full flex items-center justify-center shadow-2xl">
-            <div className="flex items-center space-x-2">
-              <Play className="h-8 w-8 sm:h-10 sm:w-10 text-white fill-white" />
-              <DollarSign className="h-8 w-8 sm:h-10 sm:w-10 text-white" />
+          <div className="w-20 h-20 bg-gradient-to-r from-pink-500 to-pink-600 rounded-full flex items-center justify-center shadow-lg">
+            <div className="flex items-center space-x-1">
+              <Play className="h-6 w-6 text-white fill-white" />
+              <DollarSign className="h-6 w-6 text-white" />
             </div>
           </div>
         </div>
 
         {/* Welcome Text */}
-        <div className="text-center space-y-3">
-          <h4 className="text-3xl sm:text-4xl font-black text-gray-800">Welcome To</h4>
-          <h4 className="text-2xl sm:text-3xl font-black text-pink-500">CashTube2025</h4>
-          <p className="text-lg sm:text-xl text-gray-700 font-bold">{"Enter (5) digit code"}</p>
+        <div className="text-center space-y-2">
+          <h4 className="text-2xl font-bold text-gray-800">Welcome To</h4>
+          <h4 className="text-xl font-bold text-pink-500">CashTube2025</h4>
+          <p className="text-base text-gray-700 font-semibold">{"Enter (5) digit code"}</p>
         </div>
 
         {/* Code Input */}
-        <div className="w-full max-w-[280px]">
+        <div className="w-full max-w-[200px]">
           <Input
             type="password"
             value={code}
             readOnly
-            className="text-center text-2xl sm:text-3xl font-bold h-16 sm:h-20 border-4 border-gray-400 rounded-2xl shadow-lg"
+            className="text-center text-xl font-semibold h-12 border-2 border-gray-300 rounded-xl shadow-sm"
             placeholder=""
           />
         </div>
 
         {/* Number Pad */}
-        <div className="grid grid-cols-3 gap-4 sm:gap-6 max-w-[280px]">
+        <div className="grid grid-cols-3 gap-3 max-w-[200px]">
           {numbers.map((num) => (
             <Button
               key={num}
               variant="outline"
               size="lg"
-              className="h-16 w-20 sm:h-20 sm:w-24 text-2xl sm:text-3xl font-black border-4 border-gray-400 hover:bg-gray-100 bg-white shadow-lg rounded-2xl transform transition-all duration-200 hover:scale-105"
+              className="h-12 w-16 text-lg font-semibold border-2 border-gray-300 hover:bg-gray-100 bg-white shadow-sm rounded-xl"
               onClick={() => handleNumberClick(num)}
             >
               {num}
@@ -220,23 +220,23 @@ export default function CashTubePage() {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex space-x-4 sm:space-x-6">
+        <div className="flex space-x-3">
           <Button
             variant="destructive"
-            className="px-6 py-4 sm:px-8 sm:py-5 bg-red-500 hover:bg-red-600 text-lg sm:text-xl font-black rounded-2xl shadow-lg transform transition-all duration-200 hover:scale-105"
+            className="px-5 py-2 bg-red-500 hover:bg-red-600 text-base font-semibold rounded-xl shadow-sm"
             onClick={handleSignUp}
           >
             Sign Up
           </Button>
           <Button
             variant="outline"
-            className="px-6 py-4 sm:px-8 sm:py-5 border-4 border-gray-400 text-gray-700 hover:bg-gray-100 bg-white text-lg sm:text-xl font-black rounded-2xl shadow-lg transform transition-all duration-200 hover:scale-105"
+            className="px-5 py-2 border-2 border-gray-300 text-gray-700 hover:bg-gray-100 bg-white text-base font-semibold rounded-xl shadow-sm"
             onClick={handleClear}
           >
             Clear
           </Button>
           <Button
-            className="px-6 py-4 sm:px-8 sm:py-5 bg-green-600 hover:bg-green-700 text-lg sm:text-xl font-black rounded-2xl shadow-lg transform transition-all duration-200 hover:scale-105"
+            className="px-5 py-2 bg-green-600 hover:bg-green-700 text-base font-semibold rounded-xl shadow-sm"
             onClick={handleLogin}
           >
             Login
@@ -244,14 +244,14 @@ export default function CashTubePage() {
         </div>
 
         {/* Bottom Buttons */}
-        <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6 w-full max-w-[400px]">
+        <div className="flex flex-col space-y-3 w-full max-w-[280px]">
           <Button
-            className="flex-1 h-14 sm:h-16 bg-gradient-to-r from-cyan-400 to-cyan-500 hover:from-cyan-500 hover:to-cyan-600 text-white font-black rounded-2xl text-lg sm:text-xl shadow-lg transform transition-all duration-200 hover:scale-105"
+            className="h-11 bg-gradient-to-r from-cyan-400 to-cyan-500 hover:from-cyan-500 hover:to-cyan-600 text-white font-semibold rounded-xl text-base shadow-sm"
             onClick={handleCryptoSignup}
           >
             Signup with Crypto
           </Button>
-          <Button className="flex-1 h-14 sm:h-16 bg-gradient-to-r from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-600 text-white font-black rounded-2xl text-lg sm:text-xl shadow-lg transform transition-all duration-200 hover:scale-105">
+          <Button className="h-11 bg-gradient-to-r from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-600 text-white font-semibold rounded-xl text-base shadow-sm">
             Other Method
           </Button>
         </div>
@@ -259,23 +259,23 @@ export default function CashTubePage() {
 
       {/* Initial Welcome Modal (on site access) */}
       {showInitialWelcome && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-gray-200 rounded-3xl p-6 sm:p-8 max-w-sm w-full relative animate-in zoom-in duration-300 shadow-2xl">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-3 z-50">
+          <div className="bg-gray-200 rounded-2xl p-5 max-w-xs w-full relative animate-in zoom-in duration-300 shadow-lg">
             <Button
               variant="ghost"
               size="icon"
-              className="absolute top-4 right-4 text-gray-600 hover:text-gray-800 h-8 w-8"
+              className="absolute top-3 right-3 text-gray-600 hover:text-gray-800 h-6 w-6"
               onClick={() => setShowInitialWelcome(false)}
             >
-              <X className="h-5 w-5" />
+              <X className="h-4 w-4" />
             </Button>
-            <div className="text-center space-y-4 mt-2">
-              <h2 className="text-2xl sm:text-3xl font-black text-red-600">Welcome to Cash Tube2025</h2>
-              <div className="space-y-4 text-gray-700">
-                <p className="text-base sm:text-lg font-bold leading-relaxed">
+            <div className="text-center space-y-3 mt-2">
+              <h2 className="text-xl font-bold text-red-600">Welcome to Cash Tube2025</h2>
+              <div className="space-y-3 text-gray-700">
+                <p className="text-sm font-medium leading-relaxed">
                   If you have been looking for where to earn money by just watching ads video's.
                 </p>
-                <p className="text-base sm:text-lg font-bold leading-relaxed">
+                <p className="text-sm font-medium leading-relaxed">
                   Then you are at the right place, just get your ( 5 ) digit login code and you are good too go.
                 </p>
               </div>
@@ -286,29 +286,29 @@ export default function CashTubePage() {
 
       {/* Invalid Passcode Modal */}
       {showInvalidModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-sm w-full relative animate-in zoom-in duration-300 shadow-2xl">
-            <div className="flex flex-col items-center justify-center space-y-6 sm:space-y-8">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-3 z-50">
+          <div className="bg-white rounded-2xl p-5 max-w-xs w-full relative animate-in zoom-in duration-300 shadow-lg">
+            <div className="flex flex-col items-center justify-center space-y-5">
               {/* Error Icon */}
-              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-red-400 flex items-center justify-center">
-                <X className="h-12 w-12 sm:h-14 sm:w-14 text-red-400" />
+              <div className="w-20 h-20 rounded-full border-4 border-red-400 flex items-center justify-center">
+                <X className="h-10 w-10 text-red-400" />
               </div>
               {/* Error Message */}
-              <div className="text-center space-y-2">
-                <h2 className="text-3xl sm:text-4xl font-black text-gray-700">Oops...</h2>
-                <p className="text-xl sm:text-2xl font-bold text-gray-600">invalid Passcode!</p>
+              <div className="text-center space-y-1">
+                <h2 className="text-2xl font-bold text-gray-700">Oops...</h2>
+                <p className="text-lg font-semibold text-gray-600">invalid Passcode!</p>
               </div>
               {/* OK Button */}
               <Button
-                className="w-32 h-12 sm:h-14 bg-indigo-500 hover:bg-indigo-600 text-white text-lg sm:text-xl font-black rounded-2xl shadow-lg transform transition-all duration-200 hover:scale-105"
+                className="w-28 h-10 bg-indigo-500 hover:bg-indigo-600 text-white text-base font-semibold rounded-lg shadow-sm"
                 onClick={closeInvalidModal}
               >
                 OK
               </Button>
               {/* Buy Passcode Link */}
-              <div className="pt-4 border-t-2 border-gray-200 w-full text-center">
+              <div className="pt-3 border-t border-gray-200 w-full text-center">
                 <button
-                  className="text-orange-500 hover:text-orange-600 text-lg sm:text-xl font-black"
+                  className="text-orange-500 hover:text-orange-600 text-base font-semibold"
                   onClick={handleBuyPasscode}
                 >
                   Buy Passcode?

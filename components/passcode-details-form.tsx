@@ -67,54 +67,54 @@ export default function PasscodeDetailsForm({ isOpen, onClose, onDetailsComplete
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-3 z-[60]">
-      <div className="relative w-full max-w-lg">
+      <div className="relative w-full max-w-sm">
         {/* Background */}
-        <div className="bg-white rounded-3xl p-6 sm:p-10 relative overflow-hidden shadow-2xl">
+        <div className="bg-white rounded-2xl p-5 relative overflow-hidden shadow-lg max-h-[90vh] overflow-y-auto">
           {/* Close Button */}
           <Button
             onClick={onClose}
             variant="ghost"
             size="icon"
-            className="absolute top-4 right-4 text-gray-600 hover:text-gray-800 z-10 h-10 w-10"
+            className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 z-10 h-8 w-8"
           >
-            <X className="h-6 w-6" />
+            <X className="h-5 w-5" />
           </Button>
 
           {/* Header */}
-          <div className="mb-8 sm:mb-12">
-            <h1 className="text-3xl sm:text-4xl font-black text-gray-800 mb-4">Buy Your passcode</h1>
-            <p className="text-base sm:text-lg text-gray-600 font-semibold leading-relaxed">
+          <div className="mb-6">
+            <h1 className="text-2xl font-bold text-gray-800 mb-3">Buy Your passcode</h1>
+            <p className="text-sm text-gray-600 font-medium leading-relaxed">
               Please provide your details, note that your passcode will be reviewed immediately your payment is
               completed
             </p>
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
+          <form onSubmit={handleSubmit} className="space-y-5">
             {/* Name Field */}
             <div>
-              <label className="block text-gray-800 text-xl sm:text-2xl font-bold mb-4">Name:</label>
+              <label className="block text-gray-800 text-base font-semibold mb-2">Name:</label>
               <Input
                 type="text"
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
                 placeholder="Enter your full name"
-                className="w-full h-16 sm:h-20 text-lg sm:text-xl font-semibold border-2 border-gray-300 rounded-2xl px-6 bg-gray-50"
+                className="w-full h-12 text-base font-medium border-2 border-gray-300 rounded-lg px-4 bg-gray-50"
                 required
               />
             </div>
 
             {/* Number Field */}
             <div>
-              <label className="block text-gray-800 text-xl sm:text-2xl font-bold mb-4">Number:</label>
+              <label className="block text-gray-800 text-base font-semibold mb-2">Number:</label>
               <Input
                 type="tel"
                 name="number"
                 value={formData.number}
                 onChange={handleInputChange}
                 placeholder="Enter your phone number"
-                className="w-full h-16 sm:h-20 text-lg sm:text-xl font-semibold border-2 border-gray-300 rounded-2xl px-6 bg-gray-50"
+                className="w-full h-12 text-base font-medium border-2 border-gray-300 rounded-lg px-4 bg-gray-50"
                 maxLength={11}
                 required
               />
@@ -122,12 +122,12 @@ export default function PasscodeDetailsForm({ isOpen, onClose, onDetailsComplete
 
             {/* Amount Field */}
             <div>
-              <label className="block text-gray-800 text-xl sm:text-2xl font-bold mb-4">Amount:</label>
+              <label className="block text-gray-800 text-base font-semibold mb-2">Amount:</label>
               <Input
                 type="text"
                 value={`₦${formData.amount.toLocaleString()}`}
                 readOnly
-                className="w-full h-16 sm:h-20 text-xl sm:text-2xl font-bold bg-gray-100 border-2 border-gray-300 rounded-2xl px-6 text-center"
+                className="w-full h-12 text-lg font-semibold bg-gray-100 border-2 border-gray-300 rounded-lg px-4 text-center"
               />
             </div>
 
@@ -135,11 +135,11 @@ export default function PasscodeDetailsForm({ isOpen, onClose, onDetailsComplete
             <Button
               type="submit"
               disabled={isProcessing}
-              className="w-full h-16 sm:h-20 bg-purple-600 hover:bg-purple-700 text-white text-xl sm:text-2xl font-black rounded-2xl shadow-2xl transform transition-all duration-200 hover:scale-105"
+              className="w-full h-12 bg-purple-600 hover:bg-purple-700 text-white text-base font-semibold rounded-lg shadow-md"
             >
               {isProcessing ? (
                 <>
-                  <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 mr-3 animate-spin" />
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                   Processing...
                 </>
               ) : (
@@ -149,13 +149,13 @@ export default function PasscodeDetailsForm({ isOpen, onClose, onDetailsComplete
           </form>
 
           {/* Footer Information */}
-          <div className="mt-8 sm:mt-12 space-y-4 text-gray-700">
-            <p className="text-base sm:text-lg font-bold leading-relaxed">
-              You have to make payment of <span className="text-purple-600 font-black">₦6,500</span> in order to be
-              granted full access to the <span className="text-pink-400 font-bold">CASH-TUBE</span> video earning app.
+          <div className="mt-6 space-y-3 text-gray-700">
+            <p className="text-sm font-medium leading-relaxed">
+              You have to make payment of <span className="text-purple-600 font-semibold">₦6,500</span> in order to be
+              granted full access to the <span className="text-pink-400 font-medium">CASH-TUBE</span> video earning app.
             </p>
-            <p className="text-base sm:text-lg font-bold leading-relaxed">
-              Please note that you can withdraw back your <span className="text-purple-600 font-black">₦6,500</span>
+            <p className="text-sm font-medium leading-relaxed">
+              Please note that you can withdraw back your <span className="text-purple-600 font-semibold">₦6,500</span>
               immediately you gain access to your dashboard.
             </p>
           </div>
