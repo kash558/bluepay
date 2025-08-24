@@ -111,7 +111,7 @@ export default function BankTransferModal({
 
           {/* Instructions */}
           <div className="text-center mb-8">
-            <p className="text-sm text-gray-800 font-medium mb-8">Proceed to your bank app to complete this Transfer</p>
+            <p className="text-sm text-gray-800 font-medium mb-6">Proceed to your bank app to complete this Transfer</p>
 
             {/* Large Red X Circle */}
             <div className="flex justify-center mb-6">
@@ -253,7 +253,7 @@ export default function BankTransferModal({
         {/* Instructions */}
         <div className="text-center mb-6">
           <p className="text-sm text-gray-800 font-medium mb-2">Proceed to your bank app to complete this Transfer</p>
-          <p className="text-xs text-gray-600 font-medium">{planName} Plan Subscription Payment</p>
+          <p className="text-lg font-bold text-red-600 mb-2">DO NOT USE OPAY TO MAKE PAYMENT</p>
         </div>
 
         {/* Bank Details Card */}

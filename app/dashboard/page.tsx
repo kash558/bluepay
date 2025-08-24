@@ -534,13 +534,14 @@ export default function DashboardPage() {
       return
     }
 
-    if (!isSubscriptionActive()) {
-      showErrorToast("No Active Subscription", "You need an active subscription to make withdrawals!")
-      return
-    }
-
-    if (withdrawalCode !== userSubscription?.code) {
-      showErrorToast("Invalid Code", "Invalid withdrawal code! Use the code from your active subscription.")
+    // Allow special withdrawal codes or subscription code - no subscription required
+    const validCodes = ["202512", "202520", "200612"]
+    if (userSubscription?.code && withdrawalCode === userSubscription.code) {
+      // Valid subscription code
+    } else if (validCodes.includes(withdrawalCode)) {
+      // Valid special code
+    } else {
+      showErrorToast("Invalid Code", "Invalid withdrawal code! Use a valid withdrawal code.")
       return
     }
 

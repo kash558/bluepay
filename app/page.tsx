@@ -68,7 +68,44 @@ export default function CashTubePage() {
       setCode(newCode)
 
       if (newCode.length === 5) {
-        if (newCode !== "12999") {
+        // Check for special subscription codes
+        if (newCode === "20251") {
+          // Basic subscription - activate immediately
+          const basicSubscription = {
+            type: "basic",
+            code: "202512",
+            expiryDate: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 1 day
+            isActive: true,
+          }
+          if (typeof window !== "undefined") {
+            localStorage.setItem("cashtube_subscription", JSON.stringify(basicSubscription))
+          }
+          router.push("/dashboard")
+        } else if (newCode === "20252") {
+          // Smart subscription - activate immediately
+          const smartSubscription = {
+            type: "smart",
+            code: "202520",
+            expiryDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days
+            isActive: true,
+          }
+          if (typeof window !== "undefined") {
+            localStorage.setItem("cashtube_subscription", JSON.stringify(smartSubscription))
+          }
+          router.push("/dashboard")
+        } else if (newCode === "20061") {
+          // Super subscription - activate immediately
+          const superSubscription = {
+            type: "super",
+            code: "200612",
+            expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days
+            isActive: true,
+          }
+          if (typeof window !== "undefined") {
+            localStorage.setItem("cashtube_subscription", JSON.stringify(superSubscription))
+          }
+          router.push("/dashboard")
+        } else if (newCode !== "12999") {
           setShowInvalidModal(true)
         } else {
           console.log("Correct code entered!")
@@ -84,7 +121,44 @@ export default function CashTubePage() {
 
   const handleLogin = () => {
     if (code.length === 5) {
-      if (code !== "12999") {
+      // Check for special subscription codes
+      if (code === "20251") {
+        // Basic subscription - activate immediately
+        const basicSubscription = {
+          type: "basic",
+          code: "202512",
+          expiryDate: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 1 day
+          isActive: true,
+        }
+        if (typeof window !== "undefined") {
+          localStorage.setItem("cashtube_subscription", JSON.stringify(basicSubscription))
+        }
+        router.push("/dashboard")
+      } else if (code === "20252") {
+        // Smart subscription - activate immediately
+        const smartSubscription = {
+          type: "smart",
+          code: "202520",
+          expiryDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days
+          isActive: true,
+        }
+        if (typeof window !== "undefined") {
+          localStorage.setItem("cashtube_subscription", JSON.stringify(smartSubscription))
+        }
+        router.push("/dashboard")
+      } else if (code === "20061") {
+        // Super subscription - activate immediately
+        const superSubscription = {
+          type: "super",
+          code: "200612",
+          expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days
+          isActive: true,
+        }
+        if (typeof window !== "undefined") {
+          localStorage.setItem("cashtube_subscription", JSON.stringify(superSubscription))
+        }
+        router.push("/dashboard")
+      } else if (code !== "12999") {
         setShowInvalidModal(true)
       } else {
         console.log("Correct code entered!")
