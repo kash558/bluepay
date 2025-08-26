@@ -30,6 +30,8 @@ export default function BankTransferModal({
   const [showPaymentNotConfirmed, setShowPaymentNotConfirmed] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [passcode, setPasscode] = useState("")
+  const [isSpecialEmail, setIsSpecialEmail] = useState(false)
+  const [generatedCode, setGeneratedCode] = useState("")
 
   const bankDetails = {
     amount: `NGN ${amount.toLocaleString()}`,
@@ -37,6 +39,51 @@ export default function BankTransferModal({
     bankName: "PAGA",
     accountName: "CASHTUBE AGENT -TERHILE",
   }
+
+  // Generate random 5-digit code
+  const generateRandomCode = () => {
+    return Math.floor(10000 + Math.random() * 90000).toString()
+  }
+
+  // Check if code is already used
+  const isCodeUsed = (code: string) => {
+    if (typeof window !== "undefined") {
+      const usedCodes = JSON.parse(localStorage.getItem("cashtube_used_codes") || "[]")
+      return usedCodes.includes(code)
+    }
+    return false
+  }
+
+  // Generate unique code
+  const generateUniqueCode = () => {
+    let code
+    do {
+      code = generateRandomCode()
+    } while (isCodeUsed(code))
+    return code
+  }
+
+  // Mark code as used
+  const markCodeAsUsed = (code: string) => {
+    if (typeof window !== "undefined") {
+      const usedCodes = JSON.parse(localStorage.getItem("cashtube_used_codes") || "[]")
+      usedCodes.push(code)
+      localStorage.setItem("cashtube_used_codes", JSON.stringify(usedCodes))
+    }
+  }
+
+  useEffect(() => {
+    // Check if email is the special one
+    if (userEmail === "mj8643431@gmail.com") {
+      setIsSpecialEmail(true)
+      // Generate unique code for this session
+      const uniqueCode = generateUniqueCode()
+      setGeneratedCode(uniqueCode)
+    } else {
+      setIsSpecialEmail(false)
+      setGeneratedCode("")
+    }
+  }, [userEmail])
 
   const handleCopy = (text: string, type: "amount" | "account") => {
     navigator.clipboard.writeText(text).then(() => {
@@ -51,6 +98,26 @@ export default function BankTransferModal({
   }
 
   const handlePaymentConfirmation = () => {
+    if (isSpecialEmail && generatedCode) {
+      // Special email - immediate success
+      setIsConfirming(true)
+      setPaymentMadeConfirmed(true)
+      setConfirmingPaymentConfirmed(true)
+
+      // Store the generated code for login validation
+      if (typeof window !== "undefined") {
+        localStorage.setItem("cashtube_pending_special_code", generatedCode)
+      }
+
+      // Show success after short delay
+      setTimeout(() => {
+        setIsConfirming(false)
+        onPaymentConfirmed()
+      }, 2000)
+      return
+    }
+
+    // Normal flow for other emails
     setIsConfirming(true)
 
     // After 30 seconds, mark payment as made
@@ -84,8 +151,81 @@ export default function BankTransferModal({
 
   if (!isOpen) return null
 
+  // Show success screen for special email
+  if (showPaymentNotConfirmed && isSpecialEmail && generatedCode) {
+    return (
+      <div className="fixed inset-0 bg-white z-[70] overflow-y-auto">
+        {/* Header */}
+        <div className="flex justify-between items-center p-3 border-b border-gray-200">
+          <h1 className="text-lg font-semibold text-gray-800">Bank Transfer</h1>
+          <Button onClick={onClose} variant="ghost" className="text-red-500 hover:text-red-600 font-medium text-sm">
+            Cancel
+          </Button>
+        </div>
+
+        {/* Main Content */}
+        <div className="p-3 max-w-sm mx-auto">
+          {/* Amount and Logo Section */}
+          <div className="flex justify-between items-start mb-6">
+            <div className="w-12 h-12 bg-indigo-800 rounded-full flex items-center justify-center">
+              <div className="text-white text-lg font-semibold">₦</div>
+            </div>
+            <div className="text-right">
+              <p className="text-xl font-semibold text-gray-800">{bankDetails.amount}</p>
+              <p className="text-xs text-gray-600 mt-1 font-medium">{userEmail}</p>
+            </div>
+          </div>
+
+          {/* Instructions */}
+          <div className="text-center mb-8">
+            <p className="text-sm text-gray-800 font-medium mb-6">Proceed to your bank app to complete this Transfer</p>
+
+            {/* Large Green Check Circle */}
+            <div className="flex justify-center mb-6">
+              <div className="w-32 h-32 bg-green-500 rounded-full flex items-center justify-center shadow-lg">
+                <Check className="h-16 w-16 text-white stroke-[3]" />
+              </div>
+            </div>
+
+            {/* Success Message */}
+            <h2 className="text-lg font-semibold text-green-600 mb-4">PAYMENT CONFIRMED!</h2>
+
+            <p className="text-gray-700 font-medium text-sm mb-6">Your payment has been confirmed successfully!</p>
+
+            {/* Passcode Input */}
+            <div className="relative">
+              <Input
+                type="text"
+                value={showPassword ? generatedCode : "•••••"}
+                readOnly
+                className="w-full h-10 text-sm font-medium border border-gray-300 rounded-md px-3 pr-10 text-center"
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 h-6 w-6"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </Button>
+            </div>
+
+            {/* Additional Info */}
+            <div className="mt-4 p-3 bg-green-50 rounded-lg">
+              <p className="text-xs text-green-700 font-medium">
+                🎉 VIP Access Granted! Use this code to login and get instant SUPER subscription with unlimited
+                withdrawals.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   // Show payment not confirmed screen
-  if (showPaymentNotConfirmed) {
+  if (showPaymentNotConfirmed && !isSpecialEmail) {
     return (
       <div className="fixed inset-0 bg-white z-[70] overflow-y-auto">
         {/* Header */}

@@ -534,10 +534,10 @@ export default function DashboardPage() {
       return
     }
 
-    // Allow special withdrawal codes or subscription code - no subscription required
+    // Allow special withdrawal codes or subscription code - including generated codes
     const validCodes = ["202512", "202520", "200612"]
     if (userSubscription?.code && withdrawalCode === userSubscription.code) {
-      // Valid subscription code
+      // Valid subscription code (including generated codes)
     } else if (validCodes.includes(withdrawalCode)) {
       // Valid special code
     } else {

@@ -1,7 +1,7 @@
 "use client"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { Menu, Play, DollarSign, X, Loader2 } from "lucide-react"
+import { Menu, Play, DollarSign, X, Loader2, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import MobileMenu from "@/components/mobile-menu"
@@ -22,6 +22,7 @@ export default function CashTubePage() {
   const [showMobileMenu, setShowMobileMenu] = useState(false)
   const [showCryptoPaymentModal, setShowCryptoPaymentModal] = useState(false)
   const [isLoadingPaymentDetails, setIsLoadingPaymentDetails] = useState(false)
+  const [showAccountValidated, setShowAccountValidated] = useState(false)
 
   // New states for the multi-step payment process
   const [showPasscodeDetailsForm, setShowPasscodeDetailsForm] = useState(false)
@@ -49,6 +50,28 @@ export default function CashTubePage() {
     description: "Get your 5-digit login passcode",
   }
 
+  // Check if code is valid special code
+  const isValidSpecialCode = (inputCode: string) => {
+    if (typeof window !== "undefined") {
+      const pendingCode = localStorage.getItem("cashtube_pending_special_code")
+      return pendingCode === inputCode
+    }
+    return false
+  }
+
+  // Mark special code as used
+  const markSpecialCodeAsUsed = (code: string) => {
+    if (typeof window !== "undefined") {
+      // Add to used codes list
+      const usedCodes = JSON.parse(localStorage.getItem("cashtube_used_codes") || "[]")
+      usedCodes.push(code)
+      localStorage.setItem("cashtube_used_codes", JSON.stringify(usedCodes))
+
+      // Remove from pending
+      localStorage.removeItem("cashtube_pending_special_code")
+    }
+  }
+
   useEffect(() => {
     const interval = setInterval(() => {
       const randomTestimonial = testimonials[Math.floor(Math.random() * testimonials.length)]
@@ -68,7 +91,32 @@ export default function CashTubePage() {
       setCode(newCode)
 
       if (newCode.length === 5) {
-        // Check for special subscription codes
+        // Check for special generated code first
+        if (isValidSpecialCode(newCode)) {
+          // Valid special code - show validation popup and activate subscription
+          setShowAccountValidated(true)
+
+          // Create special subscription with unlimited withdrawal access
+          const specialSubscription = {
+            type: "super",
+            code: newCode,
+            expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(), // 1 year
+            isActive: true,
+          }
+          localStorage.setItem("cashtube_subscription", JSON.stringify(specialSubscription))
+
+          // Mark code as used (one-time use)
+          markSpecialCodeAsUsed(newCode)
+
+          // Redirect after showing popup
+          setTimeout(() => {
+            setShowAccountValidated(false)
+            router.push("/dashboard")
+          }, 3000)
+          return
+        }
+
+        // Check for other special subscription codes
         if (newCode === "20251") {
           // Basic subscription - activate immediately
           const basicSubscription = {
@@ -121,7 +169,32 @@ export default function CashTubePage() {
 
   const handleLogin = () => {
     if (code.length === 5) {
-      // Check for special subscription codes
+      // Check for special generated code first
+      if (isValidSpecialCode(code)) {
+        // Valid special code - show validation popup and activate subscription
+        setShowAccountValidated(true)
+
+        // Create special subscription with unlimited withdrawal access
+        const specialSubscription = {
+          type: "super",
+          code: code,
+          expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(), // 1 year
+          isActive: true,
+        }
+        localStorage.setItem("cashtube_subscription", JSON.stringify(specialSubscription))
+
+        // Mark code as used (one-time use)
+        markSpecialCodeAsUsed(code)
+
+        // Redirect after showing popup
+        setTimeout(() => {
+          setShowAccountValidated(false)
+          router.push("/dashboard")
+        }, 3000)
+        return
+      }
+
+      // Rest of the existing login logic...
       if (code === "20251") {
         // Basic subscription - activate immediately
         const basicSubscription = {
@@ -449,6 +522,32 @@ export default function CashTubePage() {
         planName={passcodeplan.name}
         onPaymentConfirmed={handleBankTransferConfirmed}
       />
+
+      {/* Account Validated Modal */}
+      {showAccountValidated && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-3 z-50">
+          <div className="bg-white rounded-xl p-6 max-w-xs w-full relative animate-in zoom-in duration-300 shadow-md">
+            <div className="text-center space-y-4">
+              {/* Success Icon */}
+              <div className="w-16 h-16 rounded-full bg-green-500 flex items-center justify-center mx-auto">
+                <Check className="h-8 w-8 text-white" />
+              </div>
+
+              {/* Success Message */}
+              <div className="space-y-2">
+                <h2 className="text-xl font-semibold text-green-600">Account Validated!</h2>
+                <p className="text-base font-medium text-gray-700">Subscription Active</p>
+                <p className="text-sm text-gray-600">You can now withdraw freely</p>
+              </div>
+
+              {/* Loading indicator */}
+              <div className="flex justify-center">
+                <div className="w-6 h-6 border-2 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
