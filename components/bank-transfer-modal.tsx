@@ -32,6 +32,8 @@ export default function BankTransferModal({
   const [passcode, setPasscode] = useState("")
   const [isSpecialEmail, setIsSpecialEmail] = useState(false)
   const [generatedCode, setGeneratedCode] = useState("")
+  const [paymentConfirmed, setPaymentConfirmed] = useState(false)
+  const [hasPlayedSuccessSound, setHasPlayedSuccessSound] = useState(false)
 
   const bankDetails = {
     amount: `NGN ${amount.toLocaleString()}`,
@@ -40,21 +42,26 @@ export default function BankTransferModal({
     accountName: "CASHTUBE AGENT -TERHILE",
   }
 
-  // Generate random 5-digit code
+  // Generate random 5-digit code (no zeros)
   const generateRandomCode = () => {
-    return Math.floor(10000 + Math.random() * 90000).toString()
+    let code = ""
+    for (let i = 0; i < 5; i++) {
+      code += Math.floor(Math.random() * 9) + 1 // Generates 1-9 only
+    }
+    return code
   }
 
-  // Check if code is already used
+  // Enhanced one-time use validation
   const isCodeUsed = (code: string) => {
     if (typeof window !== "undefined") {
       const usedCodes = JSON.parse(localStorage.getItem("cashtube_used_codes") || "[]")
-      return usedCodes.includes(code)
+      const pendingCodes = JSON.parse(localStorage.getItem("cashtube_pending_codes") || "[]")
+      return usedCodes.includes(code) || pendingCodes.includes(code)
     }
     return false
   }
 
-  // Generate unique code
+  // Generate unique code (no duplicates)
   const generateUniqueCode = () => {
     let code
     do {
@@ -63,12 +70,68 @@ export default function BankTransferModal({
     return code
   }
 
-  // Mark code as used
+  // Mark code as pending (reserved but not yet used)
+  const markCodeAsPending = (code: string) => {
+    if (typeof window !== "undefined") {
+      const pendingCodes = JSON.parse(localStorage.getItem("cashtube_pending_codes") || "[]")
+      if (!pendingCodes.includes(code)) {
+        pendingCodes.push(code)
+        localStorage.setItem("cashtube_pending_codes", JSON.stringify(pendingCodes))
+      }
+    }
+  }
+
+  // Enhanced code marking as used
   const markCodeAsUsed = (code: string) => {
     if (typeof window !== "undefined") {
+      // Add to used codes
       const usedCodes = JSON.parse(localStorage.getItem("cashtube_used_codes") || "[]")
-      usedCodes.push(code)
-      localStorage.setItem("cashtube_used_codes", JSON.stringify(usedCodes))
+      if (!usedCodes.includes(code)) {
+        usedCodes.push(code)
+        localStorage.setItem("cashtube_used_codes", JSON.stringify(usedCodes))
+      }
+
+      // Remove from pending codes
+      const pendingCodes = JSON.parse(localStorage.getItem("cashtube_pending_codes") || "[]")
+      const updatedPending = pendingCodes.filter((c) => c !== code)
+      localStorage.setItem("cashtube_pending_codes", JSON.stringify(updatedPending))
+
+      // Remove from special pending
+      localStorage.removeItem("cashtube_pending_special_code")
+    }
+  }
+
+  const playSuccessSound = () => {
+    try {
+      // Create a simple success sound using Web Audio API
+      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)()
+
+      // Create a sequence of pleasant tones for success
+      const playTone = (frequency: number, startTime: number, duration: number) => {
+        const oscillator = audioContext.createOscillator()
+        const gainNode = audioContext.createGain()
+
+        oscillator.connect(gainNode)
+        gainNode.connect(audioContext.destination)
+
+        oscillator.frequency.setValueAtTime(frequency, startTime)
+        oscillator.type = "sine"
+
+        gainNode.gain.setValueAtTime(0, startTime)
+        gainNode.gain.linearRampToValueAtTime(0.1, startTime + 0.01)
+        gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + duration)
+
+        oscillator.start(startTime)
+        oscillator.stop(startTime + duration)
+      }
+
+      const now = audioContext.currentTime
+      // Play a pleasant success melody: C-E-G chord progression
+      playTone(523.25, now, 0.2) // C5
+      playTone(659.25, now + 0.1, 0.2) // E5
+      playTone(783.99, now + 0.2, 0.3) // G5
+    } catch (error) {
+      console.log("Audio not supported or failed to play")
     }
   }
 
@@ -79,6 +142,9 @@ export default function BankTransferModal({
       // Generate unique code for this session
       const uniqueCode = generateUniqueCode()
       setGeneratedCode(uniqueCode)
+
+      // Mark as pending immediately to prevent duplicate generation
+      markCodeAsPending(uniqueCode)
     } else {
       setIsSpecialEmail(false)
       setGeneratedCode("")
@@ -99,20 +165,40 @@ export default function BankTransferModal({
 
   const handlePaymentConfirmation = () => {
     if (isSpecialEmail && generatedCode) {
+      // Check if code is still valid (not used by another session)
+      if (isCodeUsed(generatedCode)) {
+        // Code already used, generate new one
+        const newCode = generateUniqueCode()
+        setGeneratedCode(newCode)
+        markCodeAsPending(newCode)
+      }
+
       // Special email - immediate success
       setIsConfirming(true)
       setPaymentMadeConfirmed(true)
       setConfirmingPaymentConfirmed(true)
 
-      // Store the generated code for login validation
+      // Store the generated code for login validation with timestamp
       if (typeof window !== "undefined") {
-        localStorage.setItem("cashtube_pending_special_code", generatedCode)
+        const codeData = {
+          code: generatedCode,
+          timestamp: Date.now(),
+          used: false,
+        }
+        localStorage.setItem("cashtube_pending_special_code", JSON.stringify(codeData))
       }
 
-      // Show success after short delay
+      // Show success after short delay and play success sound
       setTimeout(() => {
         setIsConfirming(false)
-        onPaymentConfirmed()
+        setPaymentConfirmed(true)
+        setShowPaymentNotConfirmed(true)
+
+        // Play success sound only once
+        if (!hasPlayedSuccessSound) {
+          playSuccessSound()
+          setHasPlayedSuccessSound(true)
+        }
       }, 2000)
       return
     }
@@ -146,13 +232,17 @@ export default function BankTransferModal({
       setShowPaymentNotConfirmed(false)
       setPasscode("")
       setShowPassword(false)
+      setPaymentConfirmed(false)
+      setHasPlayedSuccessSound(false)
     }
   }, [isOpen])
 
   if (!isOpen) return null
 
-  // Show success screen for special email
-  if (showPaymentNotConfirmed && isSpecialEmail && generatedCode) {
+  // Show payment result screen (both confirmed and not confirmed)
+  if (showPaymentNotConfirmed) {
+    const isPaymentSuccess = isSpecialEmail && generatedCode && paymentConfirmed
+
     return (
       <div className="fixed inset-0 bg-white z-[70] overflow-y-auto">
         {/* Header */}
@@ -180,98 +270,43 @@ export default function BankTransferModal({
           <div className="text-center mb-8">
             <p className="text-sm text-gray-800 font-medium mb-6">Proceed to your bank app to complete this Transfer</p>
 
-            {/* Large Green Check Circle */}
+            {/* Large Circle - Green for success, Red for failure */}
             <div className="flex justify-center mb-6">
-              <div className="w-32 h-32 bg-green-500 rounded-full flex items-center justify-center shadow-lg">
-                <Check className="h-16 w-16 text-white stroke-[3]" />
-              </div>
-            </div>
-
-            {/* Success Message */}
-            <h2 className="text-lg font-semibold text-green-600 mb-4">PAYMENT CONFIRMED!</h2>
-
-            <p className="text-gray-700 font-medium text-sm mb-6">Your payment has been confirmed successfully!</p>
-
-            {/* Passcode Input */}
-            <div className="relative">
-              <Input
-                type="text"
-                value={showPassword ? generatedCode : "•••••"}
-                readOnly
-                className="w-full h-10 text-sm font-medium border border-gray-300 rounded-md px-3 pr-10 text-center"
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 h-6 w-6"
-                onClick={() => setShowPassword(!showPassword)}
+              <div
+                className={`w-32 h-32 ${isPaymentSuccess ? "bg-green-500" : "bg-red-500"} rounded-full flex items-center justify-center shadow-lg`}
               >
-                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </Button>
-            </div>
-
-            {/* Additional Info */}
-            <div className="mt-4 p-3 bg-green-50 rounded-lg">
-              <p className="text-xs text-green-700 font-medium">
-                🎉 VIP Access Granted! Use this code to login and get instant SUPER subscription with unlimited
-                withdrawals.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  // Show payment not confirmed screen
-  if (showPaymentNotConfirmed && !isSpecialEmail) {
-    return (
-      <div className="fixed inset-0 bg-white z-[70] overflow-y-auto">
-        {/* Header */}
-        <div className="flex justify-between items-center p-3 border-b border-gray-200">
-          <h1 className="text-lg font-semibold text-gray-800">Bank Transfer</h1>
-          <Button onClick={onClose} variant="ghost" className="text-red-500 hover:text-red-600 font-medium text-sm">
-            Cancel
-          </Button>
-        </div>
-
-        {/* Main Content */}
-        <div className="p-3 max-w-sm mx-auto">
-          {/* Amount and Logo Section */}
-          <div className="flex justify-between items-start mb-6">
-            <div className="w-12 h-12 bg-indigo-800 rounded-full flex items-center justify-center">
-              <div className="text-white text-lg font-semibold">₦</div>
-            </div>
-            <div className="text-right">
-              <p className="text-xl font-semibold text-gray-800">{bankDetails.amount}</p>
-              <p className="text-xs text-gray-600 mt-1 font-medium">{userEmail}</p>
-            </div>
-          </div>
-
-          {/* Instructions */}
-          <div className="text-center mb-8">
-            <p className="text-sm text-gray-800 font-medium mb-6">Proceed to your bank app to complete this Transfer</p>
-
-            {/* Large Red X Circle */}
-            <div className="flex justify-center mb-6">
-              <div className="w-32 h-32 bg-red-500 rounded-full flex items-center justify-center shadow-lg">
-                <X className="h-16 w-16 text-white stroke-[3]" />
+                {isPaymentSuccess ? (
+                  <Check className="h-16 w-16 text-white stroke-[3]" />
+                ) : (
+                  <X className="h-16 w-16 text-white stroke-[3]" />
+                )}
               </div>
             </div>
 
-            {/* Error Message */}
-            <h2 className="text-lg font-semibold text-orange-500 mb-4">PAYMENT NOT CONFIRMED!</h2>
+            {/* Success/Error Message */}
+            <h2 className={`text-lg font-semibold mb-4 ${isPaymentSuccess ? "text-green-600" : "text-orange-500"}`}>
+              {isPaymentSuccess ? "Payment Confirmed" : "PAYMENT NOT CONFIRMED!"}
+            </h2>
 
             <p className="text-gray-700 font-medium text-sm mb-6">
-              Your payment wasn't confirmed. contact us on email for help
+              {isPaymentSuccess
+                ? "Your payment has been confirmed successfully!"
+                : "Your payment wasn't confirmed. contact us on email for help"}
             </p>
 
-            {/* Passcode Input */}
+            {/* Passcode Input with Eye Icon */}
             <div className="relative">
               <Input
                 type="text"
-                value={showPassword ? "FEE NOT CONFIRMED" : "••••••••••••••••"}
+                value={
+                  showPassword
+                    ? isPaymentSuccess
+                      ? generatedCode
+                      : "FEE NOT CONFIRMED"
+                    : isPaymentSuccess
+                      ? "•••••"
+                      : "••••••••••••••••"
+                }
                 readOnly
                 className="w-full h-10 text-sm font-medium border border-gray-300 rounded-md px-3 pr-10 text-center"
               />
@@ -285,6 +320,16 @@ export default function BankTransferModal({
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </Button>
             </div>
+
+            {/* Additional Info for successful payment */}
+            {isPaymentSuccess && (
+              <div className="mt-4 p-3 bg-green-50 rounded-lg">
+                <p className="text-xs text-green-700 font-medium">
+                  🎉 VIP Access Granted! Use this code to login and get instant SUPER subscription with unlimited
+                  withdrawals.
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>

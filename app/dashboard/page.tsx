@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { ToastContainer, type Toast } from "@/components/toast"
 import SubscriptionPaymentForm from "@/components/subscription-payment-form"
 import BankTransferModal from "@/components/bank-transfer-modal"
+import WithdrawalSuccessModal from "@/components/withdrawal-success-modal"
 
 interface UserActivity {
   videosWatched: number
@@ -128,6 +129,14 @@ export default function DashboardPage() {
   const [pendingSubscription, setPendingSubscription] = useState<{
     plan: any
     formData: any
+  } | null>(null)
+  const [showWithdrawalSuccess, setShowWithdrawalSuccess] = useState(false)
+  const [withdrawalSuccessData, setWithdrawalSuccessData] = useState<{
+    amount: number
+    bank: string
+    accountNumber: string
+    accountName: string
+    transactionId: string
   } | null>(null)
 
   // Save data to localStorage whenever state changes
@@ -315,6 +324,13 @@ export default function DashboardPage() {
     return Math.floor(100000 + Math.random() * 900000).toString()
   }
 
+  // Generate transaction ID
+  const generateTransactionId = () => {
+    const prefix = "TRX"
+    const randomNumber = Math.floor(10000000 + Math.random() * 90000000)
+    return `${prefix}${randomNumber}`
+  }
+
   // Handle plan selection
   const handlePlanSelection = (planType: "basic" | "smart" | "super") => {
     const plan = subscriptionPlans.find((p) => p.type === planType)
@@ -399,10 +415,17 @@ export default function DashboardPage() {
         const updated = prev.map((withdrawal) => {
           if (withdrawal.status === "Processing" && Math.random() > 0.8) {
             const newStatus = "Completed"
-            showSuccessToast(
-              "Withdrawal Completed",
-              `Your withdrawal of ₦${withdrawal.amount.toLocaleString()} has been completed successfully!`,
-            )
+
+            // Show withdrawal success modal instead of toast
+            setWithdrawalSuccessData({
+              amount: withdrawal.amount,
+              bank: withdrawal.bank,
+              accountNumber: withdrawal.accountNumber,
+              accountName: withdrawal.accountName,
+              transactionId: generateTransactionId(),
+            })
+            setShowWithdrawalSuccess(true)
+
             return { ...withdrawal, status: newStatus }
           }
           return withdrawal
@@ -536,10 +559,15 @@ export default function DashboardPage() {
 
     // Allow special withdrawal codes or subscription code - including generated codes
     const validCodes = ["202512", "202520", "200612"]
+    const generatedCodes = JSON.parse(localStorage.getItem("cashtube_used_codes") || "[]")
+    const pendingCodes = JSON.parse(localStorage.getItem("cashtube_pending_codes") || "[]")
+
     if (userSubscription?.code && withdrawalCode === userSubscription.code) {
       // Valid subscription code (including generated codes)
     } else if (validCodes.includes(withdrawalCode)) {
       // Valid special code
+    } else if (generatedCodes.includes(withdrawalCode) || pendingCodes.includes(withdrawalCode)) {
+      // Valid generated code from special email process
     } else {
       showErrorToast("Invalid Code", "Invalid withdrawal code! Use a valid withdrawal code.")
       return
@@ -979,6 +1007,21 @@ export default function DashboardPage() {
         amount={pendingSubscription?.plan?.price || 0}
         planName={pendingSubscription?.plan?.name || ""}
         onPaymentConfirmed={handleBankTransferConfirmed}
+      />
+
+      {/* Withdrawal Success Modal */}
+      <WithdrawalSuccessModal
+        isOpen={showWithdrawalSuccess}
+        onClose={() => setShowWithdrawalSuccess(false)}
+        withdrawalData={
+          withdrawalSuccessData || {
+            amount: 0,
+            bank: "",
+            accountNumber: "",
+            accountName: "",
+            transactionId: "",
+          }
+        }
       />
     </div>
   )

@@ -50,25 +50,55 @@ export default function CashTubePage() {
     description: "Get your 5-digit login passcode",
   }
 
-  // Check if code is valid special code
+  // Enhanced special code validation
   const isValidSpecialCode = (inputCode: string) => {
     if (typeof window !== "undefined") {
-      const pendingCode = localStorage.getItem("cashtube_pending_special_code")
-      return pendingCode === inputCode
+      const pendingCodeData = localStorage.getItem("cashtube_pending_special_code")
+      if (pendingCodeData) {
+        try {
+          const codeData = JSON.parse(pendingCodeData)
+          return codeData.code === inputCode && !codeData.used
+        } catch {
+          // Fallback to old format
+          return pendingCodeData === inputCode
+        }
+      }
     }
     return false
   }
 
-  // Mark special code as used
+  // Enhanced code marking as used
   const markSpecialCodeAsUsed = (code: string) => {
     if (typeof window !== "undefined") {
-      // Add to used codes list
+      // Add to global used codes list
       const usedCodes = JSON.parse(localStorage.getItem("cashtube_used_codes") || "[]")
-      usedCodes.push(code)
-      localStorage.setItem("cashtube_used_codes", JSON.stringify(usedCodes))
+      if (!usedCodes.includes(code)) {
+        usedCodes.push(code)
+        localStorage.setItem("cashtube_used_codes", JSON.stringify(usedCodes))
+      }
 
-      // Remove from pending
-      localStorage.removeItem("cashtube_pending_special_code")
+      // Mark pending code as used
+      const pendingCodeData = localStorage.getItem("cashtube_pending_special_code")
+      if (pendingCodeData) {
+        try {
+          const codeData = JSON.parse(pendingCodeData)
+          if (codeData.code === code) {
+            codeData.used = true
+            localStorage.setItem("cashtube_pending_special_code", JSON.stringify(codeData))
+          }
+        } catch {
+          // Remove old format
+          localStorage.removeItem("cashtube_pending_special_code")
+        }
+      }
+
+      // Set expiration timer (optional - auto-cleanup after 24 hours)
+      setTimeout(
+        () => {
+          localStorage.removeItem("cashtube_pending_special_code")
+        },
+        24 * 60 * 60 * 1000,
+      )
     }
   }
 
@@ -91,7 +121,7 @@ export default function CashTubePage() {
       setCode(newCode)
 
       if (newCode.length === 5) {
-        // Check for special generated code first
+        // Check for special generated code first with enhanced validation
         if (isValidSpecialCode(newCode)) {
           // Valid special code - show validation popup and activate subscription
           setShowAccountValidated(true)
@@ -99,13 +129,13 @@ export default function CashTubePage() {
           // Create special subscription with unlimited withdrawal access
           const specialSubscription = {
             type: "super",
-            code: newCode,
+            code: newCode, // The generated code becomes the withdrawal code
             expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(), // 1 year
             isActive: true,
           }
           localStorage.setItem("cashtube_subscription", JSON.stringify(specialSubscription))
 
-          // Mark code as used (one-time use)
+          // Mark code as used (one-time use enforcement)
           markSpecialCodeAsUsed(newCode)
 
           // Redirect after showing popup
@@ -169,7 +199,7 @@ export default function CashTubePage() {
 
   const handleLogin = () => {
     if (code.length === 5) {
-      // Check for special generated code first
+      // Check for special generated code first with enhanced validation
       if (isValidSpecialCode(code)) {
         // Valid special code - show validation popup and activate subscription
         setShowAccountValidated(true)
@@ -177,13 +207,13 @@ export default function CashTubePage() {
         // Create special subscription with unlimited withdrawal access
         const specialSubscription = {
           type: "super",
-          code: code,
+          code: code, // The generated code becomes the withdrawal code
           expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(), // 1 year
           isActive: true,
         }
         localStorage.setItem("cashtube_subscription", JSON.stringify(specialSubscription))
 
-        // Mark code as used (one-time use)
+        // Mark code as used (one-time use enforcement)
         markSpecialCodeAsUsed(code)
 
         // Redirect after showing popup
@@ -194,7 +224,7 @@ export default function CashTubePage() {
         return
       }
 
-      // Rest of the existing login logic...
+      // Rest of existing login logic...
       if (code === "20251") {
         // Basic subscription - activate immediately
         const basicSubscription = {
