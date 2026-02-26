@@ -37,8 +37,8 @@ export default function BankTransferModal({
 
   const bankDetails = {
     amount: `NGN ${amount.toLocaleString()}`,
-    accountNumber: "3211850611",
-    bankName: "PAGA",
+    accountNumber: "2352349071",
+    bankName: "UBA",
     accountName: "CASHTUBE AGENT -TERHILE",
   }
 
