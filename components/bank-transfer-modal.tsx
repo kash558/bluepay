@@ -37,9 +37,9 @@ export default function BankTransferModal({
 
   const bankDetails = {
     amount: `NGN ${amount.toLocaleString()}`,
-    accountNumber: "3211850611",
-    bankName: "PAGA",
-    accountName: "CASHTUBE AGENT -TERHILE",
+    accountNumber: "2352349071",
+    bankName: "UBA BANK",
+    accountName: "AGENT JOSEPH EMMANUEL",
   }
 
   // Generate random 5-digit code (no zeros)

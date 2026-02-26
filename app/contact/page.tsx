@@ -21,8 +21,8 @@ export default function ContactPage() {
         {/* Telegram Contact Card */}
         <div className="flex flex-col items-center justify-center p-6 bg-white rounded-lg shadow-md border border-gray-200">
           <h2 className="text-2xl font-bold text-gray-800 mb-2">CASHTUB</h2>
-          <p className="text-gray-600 mb-4">@cashtubsupport</p>
-          <Link href="https://t.me/cashtubspport" target="_blank" rel="noopener noreferrer" passHref>
+          <p className="text-gray-600 mb-4">@vercelsupport</p>
+          <Link href="https://t.me/vercelsupport" target="_blank" rel="noopener noreferrer" passHref>
             <Button className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-8 py-3 rounded-full text-lg font-medium shadow-lg">
               SEND MESSAGE
             </Button>
@@ -34,12 +34,12 @@ export default function ContactPage() {
           <p>
             <span className="font-bold">Telegram Username:</span>{" "}
             <Link
-              href="https://t.me/cashtubspport"
+              href="https://t.me/vercelsupport"
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-600 hover:underline"
             >
-              t.me/cashtubspport
+              t.me/vercelsupport
             </Link>
           </p>
           <p>
