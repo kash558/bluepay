@@ -22,7 +22,7 @@ export default function PasscodeDetailsForm({ isOpen, onClose, onDetailsComplete
   const [formData, setFormData] = useState<PasscodeDetailsData>({
     name: "",
     number: "",
-    amount: 6500,
+    amount: 7500,
   })
   const [isProcessing, setIsProcessing] = useState(false)
 
@@ -58,7 +58,7 @@ export default function PasscodeDetailsForm({ isOpen, onClose, onDetailsComplete
       setFormData({
         name: "",
         number: "",
-        amount: 6500,
+        amount: 7500,
       })
     }, 1500)
   }
@@ -151,11 +151,11 @@ export default function PasscodeDetailsForm({ isOpen, onClose, onDetailsComplete
           {/* Footer Information */}
           <div className="mt-4 space-y-2 text-gray-700">
             <p className="text-xs font-medium leading-relaxed">
-              You have to make payment of <span className="text-purple-600 font-semibold">₦6,500</span> in order to be
+              You have to make payment of <span className="text-purple-600 font-semibold">₦7,500</span> in order to be
               granted full access to the <span className="text-pink-400 font-medium">CASH-TUBE</span> video earning app.
             </p>
             <p className="text-xs font-medium leading-relaxed">
-              Please note that you can withdraw back your <span className="text-purple-600 font-semibold">₦6,500</span>
+              Please note that you can withdraw back your <span className="text-purple-600 font-semibold">₦7,500</span>
               immediately you gain access to your dashboard.
             </p>
           </div>
