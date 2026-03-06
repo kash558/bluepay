@@ -45,7 +45,7 @@ export default function CashTubePage() {
   const passcodeplan = {
     type: "passcode" as const,
     name: "Passcode",
-    price: 6500,
+    price: 7500,
     duration: "",
     description: "Get your 5-digit login passcode",
   }

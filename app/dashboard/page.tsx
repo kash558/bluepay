@@ -54,9 +54,9 @@ export default function DashboardPage() {
   const [balance, setBalance] = useState(() => {
     if (typeof window !== "undefined") {
       const savedBalance = localStorage.getItem("cashtube_balance")
-      return savedBalance ? Number.parseInt(savedBalance) : 6500
+      return savedBalance ? Number.parseInt(savedBalance) : 7500
     }
-    return 6500
+    return 7500
   })
 
   const [userActivity, setUserActivity] = useState<UserActivity>(() => {
