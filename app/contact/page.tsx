@@ -44,8 +44,8 @@ export default function ContactPage() {
           </p>
           <p>
             <span className="font-bold">Email Support:</span>{" "}
-            <a href="mailto:cashtubespport2025@gmail.com" className="text-blue-600 hover:underline">
-              cashtubespport2025@gmail.com
+            <a href="mailto:fairmonipayofficial@gmail.com" className="text-blue-600 hover:underline">
+              fairmonipayofficial@gmail.com
             </a>
           </p>
           <p>
@@ -63,14 +63,14 @@ export default function ContactPage() {
           </li>
           <li>
             E-mail Support at{" "}
-            <a href="mailto:cashtubespport2025@gmail.com" className="text-blue-600 hover:underline">
-              cashtubespport2025@gmail.com
+            <a href="mailto:fairmonipayofficial@gmail.com" className="text-blue-600 hover:underline">
+              fairmonipayofficial@gmail.com
             </a>
           </li>
           <li>
             Orders and Returns at{" "}
-            <a href="mailto:cashtubespport2025@gmail.com" className="text-blue-600 hover:underline">
-              cashtubespport2025@gmail.com
+            <a href="mailto:fairmonipayofficial@gmail.com" className="text-blue-600 hover:underline">
+              fairmonipayofficial@gmail.com
             </a>
           </li>
         </ul>
