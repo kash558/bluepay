@@ -48,7 +48,7 @@ export default function AboutPage() {
             button.
           </li>
           <li>
-            Make your payment of <span className="font-bold">₦6,500</span> to the provided account details displayed on
+            Make your payment of <span className="font-bold">₦7,500</span> to the provided account details displayed on
             that section and click on the <span className="font-bold">"I have made this Bank transfer"</span>.
           </li>
           <li>
