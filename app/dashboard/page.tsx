@@ -262,7 +262,7 @@ export default function DashboardPage() {
     {
       type: "basic" as const,
       name: "Basic",
-      price: 6500,
+      price: 9500,
       duration: "1 Day",
       description: "Withdrawal access for 24 hours",
       color: "bg-blue-500",
@@ -270,7 +270,7 @@ export default function DashboardPage() {
     {
       type: "smart" as const,
       name: "Smart",
-      price: 10500,
+      price: 15250,
       duration: "1 Week",
       description: "Withdrawal access for 7 days",
       color: "bg-purple-500",
@@ -278,7 +278,7 @@ export default function DashboardPage() {
     {
       type: "super" as const,
       name: "Super",
-      price: 20000,
+      price: 30000,
       duration: "1 Month",
       description: "Withdrawal access for 30 days",
       color: "bg-gold-500",
