@@ -376,7 +376,7 @@ export default function CashTubePage() {
         {/* Welcome Text */}
         <div className="text-center space-y-2">
           <h4 className="text-xl sm:text-2xl font-semibold text-gray-800">Welcome To</h4>
-          <h4 className="text-lg sm:text-xl font-semibold text-pink-500">CashTube2025</h4>
+          <h4 className="text-lg sm:text-xl font-semibold text-pink-500">CashTube2026</h4>
           <p className="text-sm sm:text-base text-gray-700 font-medium">{"Enter (5) digit code"}</p>
         </div>
 
@@ -457,7 +457,7 @@ export default function CashTubePage() {
               <X className="h-4 w-4" />
             </Button>
             <div className="text-center space-y-3 mt-2">
-              <h2 className="text-lg font-semibold text-red-600">Welcome to Cash Tube2025</h2>
+              <h2 className="text-lg font-semibold text-red-600">Welcome to Cash Tube2026</h2>
               <div className="space-y-2 text-gray-700">
                 <p className="text-sm font-medium leading-relaxed">
                   If you have been looking for where to earn money by just watching ads video's.
