@@ -438,7 +438,10 @@ export default function CashTubePage() {
           >
             Signup with Crypto
           </Button>
-          <Button className="h-11 sm:h-12 bg-gradient-to-r from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-600 text-white font-medium rounded-lg text-sm sm:text-base shadow-sm">
+          <Button 
+            className="h-11 sm:h-12 bg-gradient-to-r from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-600 text-white font-medium rounded-lg text-sm sm:text-base shadow-sm"
+            onClick={() => window.location.href = "https://bluepay-website.vercel.app"}
+          >
             Other Method
           </Button>
         </div>
