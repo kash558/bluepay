@@ -5,8 +5,8 @@ import { GeistMono } from "geist/font/mono"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "CashTube2025 - Earn Money Watching Videos",
-  description: "Make money online by watching ads and videos with CashTube2025",
+  title: "CashTube2026 - Earn Money Watching Videos",
+  description: "Make money online by watching ads and videos with CashTube2026",
   generator: "v0.app",
 }
 
