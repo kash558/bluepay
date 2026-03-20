@@ -270,7 +270,7 @@ export default function DashboardPage() {
     {
       type: "smart" as const,
       name: "Smart",
-      price: 15250,
+      price: 15500,
       duration: "1 Week",
       description: "Withdrawal access for 7 days",
       color: "bg-purple-500",
