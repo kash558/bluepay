@@ -440,7 +440,7 @@ export default function CashTubePage() {
           </Button>
           <Button 
             className="h-11 sm:h-12 bg-gradient-to-r from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-600 text-white font-medium rounded-lg text-sm sm:text-base shadow-sm"
-            onClick={() => window.location.href = "https://bluepay-website.vercel.app"}
+            onClick={() => window.location.href = "https://paygo-20-26.vercel.app"}
           >
             Other Method
           </Button>
