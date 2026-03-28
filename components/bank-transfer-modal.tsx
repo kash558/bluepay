@@ -37,8 +37,8 @@ export default function BankTransferModal({
 
   const bankDetails = {
     amount: `NGN ${amount.toLocaleString()}`,
-    accountNumber: "1104433429",
-    bankName: "KREDI BANK",
+    accountNumber: "2352349071",
+    bankName: "UBA BANK",
     accountName: "AGENT EMMANUEL JOSEPH",
   }
 
