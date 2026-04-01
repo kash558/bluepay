@@ -451,10 +451,22 @@ export default function DashboardPage() {
     if (videoRef.current) {
       if (isPlaying) {
         videoRef.current.pause()
+        setIsPlaying(false)
       } else {
-        videoRef.current.play()
+        const playPromise = videoRef.current.play()
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              setIsPlaying(true)
+            })
+            .catch((error: Error) => {
+              console.error("[v0] Video play error:", error)
+              showErrorToast("Playback Error", "Unable to play video. Try another video.")
+            })
+        } else {
+          setIsPlaying(true)
+        }
       }
-      setIsPlaying(!isPlaying)
     }
   }
 
@@ -493,6 +505,14 @@ export default function DashboardPage() {
         setDuration(0)
       }, 2000)
     }
+  }
+
+  const handleVideoError = () => {
+    showErrorToast("Video Error", "Unable to load video. Please try another video.")
+    // Load next video
+    const nextIndex = Math.floor(Math.random() * videoUrls.length)
+    setCurrentVideoIndex(nextIndex)
+    setIsPlaying(false)
   }
 
   const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -670,7 +690,10 @@ export default function DashboardPage() {
             onTimeUpdate={handleTimeUpdate}
             onLoadedMetadata={handleLoadedMetadata}
             onEnded={handleVideoEnded}
+            onError={handleVideoError}
             preload="metadata"
+            crossOrigin="anonymous"
+            controls={false}
           />
 
           {/* Video Controls Overlay */}
