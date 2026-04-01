@@ -248,19 +248,16 @@ export default function DashboardPage() {
     "Xpress Payments Microfinance Bank",
   ]
 
-  // Sample video URLs - Reliable sources
+  // Sample video URLs - Verified working sources
   const videoUrls = [
     "https://vjs.zencdn.net/v/oceans.mp4",
     "https://www.w3schools.com/html/mov_bbb.mp4",
     "https://www.w3schools.com/html/movie.mp4",
     "https://media.w3.org/2010/05/sintel/trailer.mp4",
     "https://media.w3.org/2010/05/video/movie_300s.mp4",
-    "https://sample-videos.com/video321/mp4/720/big_buck_bunny_720p_1mb.mp4",
     "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
     "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
     "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-    "https://peach.blender.org/wp-content/uploads/trailer_1080p.mov?x11217",
-    "https://www.html5rocks.com/en/tutorials/video/basics/devstories.webm",
     "https://test-streams.mux.dev/x36xhzz/x3rusz6z94c292yj/fmp4_cbr.mp4",
   ]
 
@@ -515,11 +512,23 @@ export default function DashboardPage() {
   }
 
   const handleVideoError = () => {
-    showErrorToast("Video Error", "Unable to load video. Please try another video.")
-    // Load next video
-    const nextIndex = Math.floor(Math.random() * videoUrls.length)
-    setCurrentVideoIndex(nextIndex)
+    console.log("[v0] Video error detected, loading next video")
+    // Reset current video state
+    if (videoRef.current) {
+      videoRef.current.pause()
+      videoRef.current.currentTime = 0
+    }
     setIsPlaying(false)
+    setCurrentTime(0)
+    setDuration(0)
+    
+    // Load next video
+    let nextIndex = Math.floor(Math.random() * videoUrls.length)
+    // Ensure we don't load the same video
+    if (nextIndex === currentVideoIndex) {
+      nextIndex = (currentVideoIndex + 1) % videoUrls.length
+    }
+    setCurrentVideoIndex(nextIndex)
   }
 
   const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -692,13 +701,15 @@ export default function DashboardPage() {
         <div className="bg-black rounded-lg overflow-hidden relative">
           <video
             ref={videoRef}
+            key={currentVideoIndex}
             src={videoUrls[currentVideoIndex]}
             className="w-full aspect-video"
             onTimeUpdate={handleTimeUpdate}
             onLoadedMetadata={handleLoadedMetadata}
             onEnded={handleVideoEnded}
             onError={handleVideoError}
-            preload="metadata"
+            onCanPlay={() => console.log("[v0] Video can play")}
+            preload="auto"
             crossOrigin="anonymous"
             controls={false}
           />
