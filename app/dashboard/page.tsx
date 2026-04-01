@@ -248,20 +248,20 @@ export default function DashboardPage() {
     "Xpress Payments Microfinance Bank",
   ]
 
-  // Sample video URLs
+  // Sample video URLs - Reliable sources
   const videoUrls = [
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
     "https://vjs.zencdn.net/v/oceans.mp4",
-    "https://test-streams.mux.dev/x36xhzz/x3rusz6z94c292yj/fmp4_cbr.mp4",
-    "https://media-files.videvo.net/demo-content/free-video-no-copyright/small_watermarked.mp4",
     "https://www.w3schools.com/html/mov_bbb.mp4",
     "https://www.w3schools.com/html/movie.mp4",
     "https://media.w3.org/2010/05/sintel/trailer.mp4",
     "https://media.w3.org/2010/05/video/movie_300s.mp4",
+    "https://sample-videos.com/video321/mp4/720/big_buck_bunny_720p_1mb.mp4",
+    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+    "https://peach.blender.org/wp-content/uploads/trailer_1080p.mov?x11217",
+    "https://www.html5rocks.com/en/tutorials/video/basics/devstories.webm",
+    "https://test-streams.mux.dev/x36xhzz/x3rusz6z94c292yj/fmp4_cbr.mp4",
   ]
 
   // Subscription plans
@@ -758,9 +758,9 @@ export default function DashboardPage() {
       </div>
 
       {/* Withdrawal Modal */}
-      {showWithdrawalModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
+  {showWithdrawalModal && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+  <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[95vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-bold text-gray-800">Withdraw Funds</h3>
               <Button
@@ -954,9 +954,9 @@ export default function DashboardPage() {
       />
 
       {/* Withdrawal History Modal */}
-      {showWithdrawalHistory && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
+  {showWithdrawalHistory && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+  <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[95vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-bold text-gray-800">Withdrawal History</h3>
               <Button
