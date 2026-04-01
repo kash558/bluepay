@@ -255,13 +255,13 @@ export default function DashboardPage() {
     "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
     "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
     "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4",
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SurfingWithSteve.mp4",
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/VolkswagenGTIReview.mp4",
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4",
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4",
+    "https://vjs.zencdn.net/v/oceans.mp4",
+    "https://test-streams.mux.dev/x36xhzz/x3rusz6z94c292yj/fmp4_cbr.mp4",
+    "https://media-files.videvo.net/demo-content/free-video-no-copyright/small_watermarked.mp4",
+    "https://www.w3schools.com/html/mov_bbb.mp4",
+    "https://www.w3schools.com/html/movie.mp4",
+    "https://media.w3.org/2010/05/sintel/trailer.mp4",
+    "https://media.w3.org/2010/05/video/movie_300s.mp4",
   ]
 
   // Subscription plans
