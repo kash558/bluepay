@@ -248,13 +248,17 @@ export default function DashboardPage() {
     "Xpress Payments Microfinance Bank",
   ]
 
-  // Sample video URLs
+  // Sample video URLs - Verified working sources
   const videoUrls = [
+    "https://vjs.zencdn.net/v/oceans.mp4",
+    "https://www.w3schools.com/html/mov_bbb.mp4",
+    "https://www.w3schools.com/html/movie.mp4",
+    "https://media.w3.org/2010/05/sintel/trailer.mp4",
+    "https://media.w3.org/2010/05/video/movie_300s.mp4",
     "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
     "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
     "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+    "https://test-streams.mux.dev/x36xhzz/x3rusz6z94c292yj/fmp4_cbr.mp4",
   ]
 
   // Subscription plans
@@ -451,10 +455,22 @@ export default function DashboardPage() {
     if (videoRef.current) {
       if (isPlaying) {
         videoRef.current.pause()
+        setIsPlaying(false)
       } else {
-        videoRef.current.play()
+        const playPromise = videoRef.current.play()
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              setIsPlaying(true)
+            })
+            .catch((error: Error) => {
+              console.error("[v0] Video play error:", error)
+              showErrorToast("Playback Error", "Unable to play video. Try another video.")
+            })
+        } else {
+          setIsPlaying(true)
+        }
       }
-      setIsPlaying(!isPlaying)
     }
   }
 
@@ -493,6 +509,26 @@ export default function DashboardPage() {
         setDuration(0)
       }, 2000)
     }
+  }
+
+  const handleVideoError = () => {
+    console.log("[v0] Video error detected, loading next video")
+    // Reset current video state
+    if (videoRef.current) {
+      videoRef.current.pause()
+      videoRef.current.currentTime = 0
+    }
+    setIsPlaying(false)
+    setCurrentTime(0)
+    setDuration(0)
+    
+    // Load next video
+    let nextIndex = Math.floor(Math.random() * videoUrls.length)
+    // Ensure we don't load the same video
+    if (nextIndex === currentVideoIndex) {
+      nextIndex = (currentVideoIndex + 1) % videoUrls.length
+    }
+    setCurrentVideoIndex(nextIndex)
   }
 
   const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -665,12 +701,17 @@ export default function DashboardPage() {
         <div className="bg-black rounded-lg overflow-hidden relative">
           <video
             ref={videoRef}
+            key={currentVideoIndex}
             src={videoUrls[currentVideoIndex]}
             className="w-full aspect-video"
             onTimeUpdate={handleTimeUpdate}
             onLoadedMetadata={handleLoadedMetadata}
             onEnded={handleVideoEnded}
-            preload="metadata"
+            onError={handleVideoError}
+            onCanPlay={() => console.log("[v0] Video can play")}
+            preload="auto"
+            crossOrigin="anonymous"
+            controls={false}
           />
 
           {/* Video Controls Overlay */}
@@ -728,9 +769,9 @@ export default function DashboardPage() {
       </div>
 
       {/* Withdrawal Modal */}
-      {showWithdrawalModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
+  {showWithdrawalModal && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+  <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[95vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-bold text-gray-800">Withdraw Funds</h3>
               <Button
@@ -924,9 +965,9 @@ export default function DashboardPage() {
       />
 
       {/* Withdrawal History Modal */}
-      {showWithdrawalHistory && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
+  {showWithdrawalHistory && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+  <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[95vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-bold text-gray-800">Withdrawal History</h3>
               <Button

@@ -20,7 +20,7 @@ export default function WithdrawalSuccessModal({ isOpen, onClose, withdrawalData
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[80]">
-      <div className="bg-white rounded-lg w-full max-w-sm mx-auto overflow-hidden shadow-xl">
+      <div className="bg-white rounded-lg w-full max-w-2xl mx-auto overflow-hidden shadow-xl max-h-[95vh] overflow-y-auto">
         {/* Purple Header */}
         <div className="bg-gradient-to-r from-purple-500 to-purple-600 px-6 py-4">
           <h1 className="text-white text-xl font-bold text-center">Withdrawal Result</h1>
