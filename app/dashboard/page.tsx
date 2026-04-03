@@ -248,20 +248,13 @@ export default function DashboardPage() {
     "Xpress Payments Microfinance Bank",
   ]
 
-  // 12 Different video varieties - Verified working sources
+  // Vimeo videos - Embedded directly in dashboard
   const videoUrls = [
-    "https://vjs.zencdn.net/v/oceans.mp4", // Nature/Ocean Documentary
-    "https://www.w3schools.com/html/mov_bbb.mp4", // Animated Short Film
-    "https://www.w3schools.com/html/movie.mp4", // Educational Video
-    "https://media.w3.org/2010/05/sintel/trailer.mp4", // Movie Trailer
-    "https://media.w3.org/2010/05/video/movie_300s.mp4", // Feature Film Clip
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", // 3D Animation
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4", // Computer Graphics
-    "https://test-streams.mux.dev/x36xhzz/x3rusz6z94c292yj/fmp4_cbr.mp4", // Streaming Test
-    "https://media.w3.org/2010/05/sintel/trailer_hd.mp4", // High Definition Content
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", // Action Packed
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4", // Adventure Content
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4", // Entertainment
+    "1179097379",
+    "1174786241",
+    "1158427919",
+    "688796585",
+    "375982352",
   ]
 
   // Subscription plans
@@ -455,29 +448,8 @@ export default function DashboardPage() {
   }
 
   const handlePlayPause = () => {
-    if (videoRef.current) {
-      if (isPlaying) {
-        videoRef.current.pause()
-        setIsPlaying(false)
-      } else {
-        // Reset video state before playing
-        videoRef.current.currentTime = 0
-        const playPromise = videoRef.current.play()
-        if (playPromise !== undefined) {
-          playPromise
-            .then(() => {
-              setIsPlaying(true)
-            })
-            .catch((error: Error) => {
-              console.error("[v0] Video play error:", error)
-              // Instead of showing error, try to load next video
-              handleVideoError()
-            })
-        } else {
-          setIsPlaying(true)
-        }
-      }
-    }
+    // For Vimeo iframe, toggle play state
+    setIsPlaying(!isPlaying)
   }
 
   const handleTimeUpdate = () => {
@@ -518,14 +490,7 @@ export default function DashboardPage() {
   }
 
   const handleVideoError = () => {
-    console.log("[v0] Video error detected, loading next video")
-    // Reset current video state
-    if (videoRef.current) {
-      videoRef.current.pause()
-      videoRef.current.currentTime = 0
-      // Clear the src to force reload
-      videoRef.current.src = ""
-    }
+    console.log("[v0] Loading next video")
     setIsPlaying(false)
     setCurrentTime(0)
     setDuration(0)
@@ -717,19 +682,12 @@ export default function DashboardPage() {
         <h2 className="text-2xl font-bold text-black text-center mb-4">Watch video to earn money</h2>
 
         <div className="bg-black rounded-lg overflow-hidden relative">
-          <video
-            ref={videoRef}
+          <iframe
             key={currentVideoIndex}
-            src={videoUrls[currentVideoIndex]}
+            src={`https://player.vimeo.com/video/${videoUrls[currentVideoIndex]}?h=4c0c26e4e1&autoplay=1&muted=1`}
             className="w-full aspect-video"
-            onTimeUpdate={handleTimeUpdate}
-            onLoadedMetadata={handleLoadedMetadata}
-            onEnded={handleVideoEnded}
-            onError={handleVideoError}
-            onCanPlay={() => console.log("[v0] Video can play")}
-            preload="auto"
-            crossOrigin="anonymous"
-            controls={false}
+            allow="autoplay; fullscreen; picture-in-picture"
+            allowFullScreen
           />
 
           {/* Video Controls Overlay */}
