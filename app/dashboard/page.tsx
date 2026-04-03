@@ -248,17 +248,20 @@ export default function DashboardPage() {
     "Xpress Payments Microfinance Bank",
   ]
 
-  // Sample video URLs - Verified working sources
+  // 12 Different video varieties - Verified working sources
   const videoUrls = [
-    "https://vjs.zencdn.net/v/oceans.mp4",
-    "https://www.w3schools.com/html/mov_bbb.mp4",
-    "https://www.w3schools.com/html/movie.mp4",
-    "https://media.w3.org/2010/05/sintel/trailer.mp4",
-    "https://media.w3.org/2010/05/video/movie_300s.mp4",
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-    "https://test-streams.mux.dev/x36xhzz/x3rusz6z94c292yj/fmp4_cbr.mp4",
+    "https://vjs.zencdn.net/v/oceans.mp4", // Nature/Ocean Documentary
+    "https://www.w3schools.com/html/mov_bbb.mp4", // Animated Short Film
+    "https://www.w3schools.com/html/movie.mp4", // Educational Video
+    "https://media.w3.org/2010/05/sintel/trailer.mp4", // Movie Trailer
+    "https://media.w3.org/2010/05/video/movie_300s.mp4", // Feature Film Clip
+    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", // 3D Animation
+    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4", // Computer Graphics
+    "https://test-streams.mux.dev/x36xhzz/x3rusz6z94c292yj/fmp4_cbr.mp4", // Streaming Test
+    "https://media.w3.org/2010/05/sintel/trailer_hd.mp4", // High Definition Content
+    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", // Action Packed
+    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4", // Adventure Content
+    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4", // Entertainment
   ]
 
   // Subscription plans
