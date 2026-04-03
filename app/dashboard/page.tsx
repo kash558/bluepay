@@ -684,9 +684,9 @@ export default function DashboardPage() {
         <div className="bg-black rounded-lg overflow-hidden relative">
           <iframe
             key={currentVideoIndex}
-            src={`https://player.vimeo.com/video/${videoUrls[currentVideoIndex]}?h=4c0c26e4e1&autoplay=1`}
+            src={`https://player.vimeo.com/video/${videoUrls[currentVideoIndex]}?h=4c0c26e4e1`}
             className="w-full aspect-video"
-            allow="autoplay; fullscreen; picture-in-picture"
+            allow="fullscreen; picture-in-picture"
             allowFullScreen
           />
 
