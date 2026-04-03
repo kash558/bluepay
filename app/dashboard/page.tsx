@@ -460,6 +460,8 @@ export default function DashboardPage() {
         videoRef.current.pause()
         setIsPlaying(false)
       } else {
+        // Reset video state before playing
+        videoRef.current.currentTime = 0
         const playPromise = videoRef.current.play()
         if (playPromise !== undefined) {
           playPromise
@@ -468,7 +470,8 @@ export default function DashboardPage() {
             })
             .catch((error: Error) => {
               console.error("[v0] Video play error:", error)
-              showErrorToast("Playback Error", "Unable to play video. Try another video.")
+              // Instead of showing error, try to load next video
+              handleVideoError()
             })
         } else {
           setIsPlaying(true)
@@ -520,18 +523,22 @@ export default function DashboardPage() {
     if (videoRef.current) {
       videoRef.current.pause()
       videoRef.current.currentTime = 0
+      // Clear the src to force reload
+      videoRef.current.src = ""
     }
     setIsPlaying(false)
     setCurrentTime(0)
     setDuration(0)
     
-    // Load next video
-    let nextIndex = Math.floor(Math.random() * videoUrls.length)
-    // Ensure we don't load the same video
-    if (nextIndex === currentVideoIndex) {
-      nextIndex = (currentVideoIndex + 1) % videoUrls.length
-    }
-    setCurrentVideoIndex(nextIndex)
+    // Load next video with delay to ensure proper reset
+    setTimeout(() => {
+      let nextIndex = Math.floor(Math.random() * videoUrls.length)
+      // Ensure we don't load the same video
+      while (nextIndex === currentVideoIndex && videoUrls.length > 1) {
+        nextIndex = Math.floor(Math.random() * videoUrls.length)
+      }
+      setCurrentVideoIndex(nextIndex)
+    }, 100)
   }
 
   const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -643,9 +650,17 @@ export default function DashboardPage() {
   }
 
   useEffect(() => {
+    // Reset video state when index changes
     setCurrentTime(0)
     setIsPlaying(false)
     setHasWatchedVideo(false)
+    
+    // Reset video element
+    if (videoRef.current) {
+      videoRef.current.pause()
+      videoRef.current.currentTime = 0
+      videoRef.current.load()
+    }
   }, [currentVideoIndex])
 
   return (
