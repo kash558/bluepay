@@ -484,6 +484,20 @@ export default function DashboardPage() {
     }
   }
 
+  const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Seek functionality for Vimeo player
+    const progressDiv = e.currentTarget
+    const rect = progressDiv.getBoundingClientRect()
+    const percentage = (e.clientX - rect.left) / rect.width
+    const newTime = percentage * duration
+    
+    const iframe = document.querySelector('iframe[src*="vimeo"]') as HTMLIFrameElement
+    if (iframe && (window as any).Vimeo) {
+      const player = new (window as any).Vimeo.Player(iframe)
+      player.setCurrentTime(newTime)
+    }
+  }
+
   const resetWithdrawalForm = () => {
     setWithdrawalAmount("")
     setSelectedBank("")
