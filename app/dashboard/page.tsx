@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Play, Pause, Volume2, Maximize, MoreVertical, LogOut, X, CreditCard } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -39,7 +39,7 @@ interface WithdrawalRecord {
 
 export default function DashboardPage() {
   const router = useRouter()
-  const videoRef = useRef<HTMLVideoElement>(null)
+
 
   // Get user name from localStorage
   const [userName, setUserName] = useState(() => {
@@ -248,18 +248,24 @@ export default function DashboardPage() {
     "Xpress Payments Microfinance Bank",
   ]
 
-  // Sample video URLs - Verified working sources
-  const videoUrls = [
-    "https://vjs.zencdn.net/v/oceans.mp4",
-    "https://www.w3schools.com/html/mov_bbb.mp4",
-    "https://www.w3schools.com/html/movie.mp4",
-    "https://media.w3.org/2010/05/sintel/trailer.mp4",
-    "https://media.w3.org/2010/05/video/movie_300s.mp4",
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-    "https://test-streams.mux.dev/x36xhzz/x3rusz6z94c292yj/fmp4_cbr.mp4",
+  // Vimeo videos - Embedded directly in dashboard (shuffled)
+  const videoUrlsOriginal = [
+    "1179097379",
+    "1174786241",
+    "1158427919",
+    "688796585",
+    "375982352",
   ]
+  
+  // Shuffle videos on mount
+  const [videoUrls] = useState(() => {
+    const shuffled = [...videoUrlsOriginal]
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+    }
+    return shuffled
+  })
 
   // Subscription plans
   const subscriptionPlans = [
@@ -452,92 +458,15 @@ export default function DashboardPage() {
   }
 
   const handlePlayPause = () => {
-    if (videoRef.current) {
+    const iframe = document.querySelector('iframe[src*="vimeo"]') as HTMLIFrameElement
+    if (iframe && (window as any).Vimeo) {
+      const player = new (window as any).Vimeo.Player(iframe)
       if (isPlaying) {
-        videoRef.current.pause()
-        setIsPlaying(false)
+        player.pause()
       } else {
-        const playPromise = videoRef.current.play()
-        if (playPromise !== undefined) {
-          playPromise
-            .then(() => {
-              setIsPlaying(true)
-            })
-            .catch((error: Error) => {
-              console.error("[v0] Video play error:", error)
-              showErrorToast("Playback Error", "Unable to play video. Try another video.")
-            })
-        } else {
-          setIsPlaying(true)
-        }
+        player.play()
       }
-    }
-  }
-
-  const handleTimeUpdate = () => {
-    if (videoRef.current) {
-      setCurrentTime(videoRef.current.currentTime)
-    }
-  }
-
-  const handleLoadedMetadata = () => {
-    if (videoRef.current) {
-      setDuration(videoRef.current.duration)
-    }
-  }
-
-  const handleVideoEnded = () => {
-    if (!hasWatchedVideo) {
-      const earnings = 6000
-      setBalance((prev) => prev + earnings)
-      setHasWatchedVideo(true)
-      setIsPlaying(false)
-
-      // Update user activity
-      updateUserActivity({
-        videosWatched: userActivity.videosWatched + 1,
-        totalEarnings: userActivity.totalEarnings + earnings,
-      })
-
-      showSuccessToast("Video Completed!", `You earned ₦${earnings.toLocaleString()} for watching this video!`)
-
-      setTimeout(() => {
-        const nextIndex = Math.floor(Math.random() * videoUrls.length)
-        setCurrentVideoIndex(nextIndex)
-        setHasWatchedVideo(false)
-        setCurrentTime(0)
-        setDuration(0)
-      }, 2000)
-    }
-  }
-
-  const handleVideoError = () => {
-    console.log("[v0] Video error detected, loading next video")
-    // Reset current video state
-    if (videoRef.current) {
-      videoRef.current.pause()
-      videoRef.current.currentTime = 0
-    }
-    setIsPlaying(false)
-    setCurrentTime(0)
-    setDuration(0)
-    
-    // Load next video
-    let nextIndex = Math.floor(Math.random() * videoUrls.length)
-    // Ensure we don't load the same video
-    if (nextIndex === currentVideoIndex) {
-      nextIndex = (currentVideoIndex + 1) % videoUrls.length
-    }
-    setCurrentVideoIndex(nextIndex)
-  }
-
-  const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (videoRef.current && duration > 0) {
-      const rect = e.currentTarget.getBoundingClientRect()
-      const clickX = e.clientX - rect.left
-      const newTime = (clickX / rect.width) * duration
-      videoRef.current.currentTime = newTime
-      setCurrentTime(newTime)
+      setIsPlaying(!isPlaying)
     }
   }
 
@@ -549,10 +478,23 @@ export default function DashboardPage() {
   }
 
   const handleFullscreen = () => {
-    if (videoRef.current) {
-      if (videoRef.current.requestFullscreen) {
-        videoRef.current.requestFullscreen()
-      }
+    const iframe = document.querySelector('iframe[src*="vimeo"]') as HTMLIFrameElement
+    if (iframe && iframe.requestFullscreen) {
+      iframe.requestFullscreen()
+    }
+  }
+
+  const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Seek functionality for Vimeo player
+    const progressDiv = e.currentTarget
+    const rect = progressDiv.getBoundingClientRect()
+    const percentage = (e.clientX - rect.left) / rect.width
+    const newTime = percentage * duration
+    
+    const iframe = document.querySelector('iframe[src*="vimeo"]') as HTMLIFrameElement
+    if (iframe && (window as any).Vimeo) {
+      const player = new (window as any).Vimeo.Player(iframe)
+      player.setCurrentTime(newTime)
     }
   }
 
@@ -640,10 +582,70 @@ export default function DashboardPage() {
   }
 
   useEffect(() => {
+    // Reset video state when index changes
     setCurrentTime(0)
     setIsPlaying(false)
     setHasWatchedVideo(false)
   }, [currentVideoIndex])
+
+  // Load Vimeo API and track video progress
+  useEffect(() => {
+    // Load Vimeo API script
+    if (!(window as any).Vimeo) {
+      const script = document.createElement("script")
+      script.src = "https://player.vimeo.com/api/player.js"
+      document.body.appendChild(script)
+    }
+
+    // Wait for Vimeo API to load and initialize player
+    const timeout = setTimeout(() => {
+      const iframes = document.querySelectorAll('iframe[src*="vimeo"]')
+      if (iframes.length > 0 && (window as any).Vimeo) {
+        const iframe = iframes[iframes.length - 1] as HTMLIFrameElement
+        const player = new (window as any).Vimeo.Player(iframe)
+
+        // Track video time
+        player.on("timeupdate", (data: any) => {
+          setCurrentTime(data.seconds)
+        })
+
+        // Track video duration
+        player.on("loadedmetadata", () => {
+          player.getDuration().then((dur: number) => {
+            setDuration(dur)
+          })
+        })
+
+        // Handle video end - this is critical for earnings
+        const endedHandler = () => {
+          console.log("[v0] Video ended event fired")
+          if (!hasWatchedVideo) {
+            const earnings = 12000
+            setBalance((prev) => prev + earnings)
+            setHasWatchedVideo(true)
+            showSuccessToast("Video Completed!", `You earned ₦${earnings.toLocaleString()} for watching this video!`)
+            
+            setTimeout(() => {
+              const nextIndex = Math.floor(Math.random() * videoUrls.length)
+              setCurrentVideoIndex(nextIndex)
+              setHasWatchedVideo(false)
+              setCurrentTime(0)
+              setDuration(0)
+            }, 2000)
+          }
+        }
+        
+        player.on("ended", endedHandler)
+
+        // Auto-play on load
+        player.play().catch(() => {
+          console.log("[v0] Autoplay blocked by browser")
+        })
+      }
+    }, 500)
+
+    return () => clearTimeout(timeout)
+  }, [currentVideoIndex, hasWatchedVideo, videoUrls])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-400 via-blue-500 to-purple-600 p-4">
@@ -699,19 +701,13 @@ export default function DashboardPage() {
         <h2 className="text-2xl font-bold text-black text-center mb-4">Watch video to earn money</h2>
 
         <div className="bg-black rounded-lg overflow-hidden relative">
-          <video
-            ref={videoRef}
+          <iframe
             key={currentVideoIndex}
-            src={videoUrls[currentVideoIndex]}
+            src={`https://player.vimeo.com/video/${videoUrls[currentVideoIndex]}?h=4c0c26e4e1&autoplay=0&title=0&byline=0&portrait=0`}
             className="w-full aspect-video"
-            onTimeUpdate={handleTimeUpdate}
-            onLoadedMetadata={handleLoadedMetadata}
-            onEnded={handleVideoEnded}
-            onError={handleVideoError}
-            onCanPlay={() => console.log("[v0] Video can play")}
-            preload="auto"
-            crossOrigin="anonymous"
-            controls={false}
+            allow="autoplay; fullscreen; picture-in-picture"
+            allowFullScreen
+            title={`Video ${currentVideoIndex + 1}`}
           />
 
           {/* Video Controls Overlay */}
