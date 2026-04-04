@@ -476,7 +476,6 @@ export default function DashboardPage() {
       router.push("/")
     }, 1000)
   }
-  }
 
   const handleFullscreen = () => {
     const iframe = document.querySelector('iframe[src*="vimeo"]') as HTMLIFrameElement
@@ -485,32 +484,18 @@ export default function DashboardPage() {
     }
   }
 
-  // Vimeo videos handle their own controls and playback
-
-
-
-  const handleVideoError = () => {
-    console.log("[v0] Loading next video")
-    setIsPlaying(false)
-    setCurrentTime(0)
-    setDuration(0)
+  const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Seek functionality for Vimeo player
+    const progressDiv = e.currentTarget
+    const rect = progressDiv.getBoundingClientRect()
+    const percentage = (e.clientX - rect.left) / rect.width
+    const newTime = percentage * duration
     
-    // Load next video with delay to ensure proper reset
-    setTimeout(() => {
-      let nextIndex = Math.floor(Math.random() * videoUrls.length)
-      // Ensure we don't load the same video
-      while (nextIndex === currentVideoIndex && videoUrls.length > 1) {
-        nextIndex = Math.floor(Math.random() * videoUrls.length)
-      }
-      setCurrentVideoIndex(nextIndex)
-    }, 100)
-  }
-
-  const handleLogout = () => {
-    showInfoToast("Logged Out", "You have been successfully logged out.")
-    setTimeout(() => {
-      router.push("/")
-    }, 1000)
+    const iframe = document.querySelector('iframe[src*="vimeo"]') as HTMLIFrameElement
+    if (iframe && (window as any).Vimeo) {
+      const player = new (window as any).Vimeo.Player(iframe)
+      player.setCurrentTime(newTime)
+    }
   }
 
   const resetWithdrawalForm = () => {
