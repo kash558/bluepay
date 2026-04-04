@@ -39,7 +39,7 @@ interface WithdrawalRecord {
 
 export default function DashboardPage() {
   const router = useRouter()
-  const videoRef = useRef<HTMLVideoElement>(null)
+
 
   // Get user name from localStorage
   const [userName, setUserName] = useState(() => {
@@ -452,10 +452,7 @@ export default function DashboardPage() {
     setIsPlaying(!isPlaying)
   }
 
-  const handleTimeUpdate = () => {
-    if (videoRef.current) {
-      setCurrentTime(videoRef.current.currentTime)
-    }
+  // Vimeo videos handle their own controls and playback
   }
 
   const handleLoadedMetadata = () => {
@@ -619,14 +616,22 @@ export default function DashboardPage() {
     setCurrentTime(0)
     setIsPlaying(false)
     setHasWatchedVideo(false)
-    
-    // Reset video element
-    if (videoRef.current) {
-      videoRef.current.pause()
-      videoRef.current.currentTime = 0
-      videoRef.current.load()
-    }
   }, [currentVideoIndex])
+
+  // Handle Vimeo video end using postMessage API
+  useEffect(() => {
+    const handleVimeoMessage = (event: MessageEvent) => {
+      if (event.origin !== "https://player.vimeo.com") return
+      
+      const data = JSON.parse(event.data)
+      if (data.event === "finish") {
+        handleVideoEnded()
+      }
+    }
+
+    window.addEventListener("message", handleVimeoMessage)
+    return () => window.removeEventListener("message", handleVimeoMessage)
+  }, [hasWatchedVideo, currentVideoIndex, userActivity, balance])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-400 via-blue-500 to-purple-600 p-4">
