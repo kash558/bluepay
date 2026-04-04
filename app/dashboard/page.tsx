@@ -448,8 +448,37 @@ export default function DashboardPage() {
   }
 
   const handlePlayPause = () => {
-    // For Vimeo iframe, toggle play state
-    setIsPlaying(!isPlaying)
+    const iframe = document.querySelector('iframe[src*="vimeo"]') as HTMLIFrameElement
+    if (iframe && (window as any).Vimeo) {
+      const player = new (window as any).Vimeo.Player(iframe)
+      if (isPlaying) {
+        player.pause()
+      } else {
+        player.play()
+      }
+      setIsPlaying(!isPlaying)
+    }
+  }
+
+  const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Seek functionality for Vimeo player
+    const progressDiv = e.currentTarget
+    const rect = progressDiv.getBoundingClientRect()
+    const percentage = (e.clientX - rect.left) / rect.width
+    const newTime = percentage * duration
+    
+    const iframe = document.querySelector('iframe[src*="vimeo"]') as HTMLIFrameElement
+    if (iframe && (window as any).Vimeo) {
+      const player = new (window as any).Vimeo.Player(iframe)
+      player.setCurrentTime(newTime)
+    }
+  }
+
+  const handleFullscreen = () => {
+    const iframe = document.querySelector('iframe[src*="vimeo"]') as HTMLIFrameElement
+    if (iframe && iframe.requestFullscreen) {
+      iframe.requestFullscreen()
+    }
   }
 
   // Vimeo videos handle their own controls and playback
@@ -496,29 +525,11 @@ export default function DashboardPage() {
     }, 100)
   }
 
-  const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (videoRef.current && duration > 0) {
-      const rect = e.currentTarget.getBoundingClientRect()
-      const clickX = e.clientX - rect.left
-      const newTime = (clickX / rect.width) * duration
-      videoRef.current.currentTime = newTime
-      setCurrentTime(newTime)
-    }
-  }
-
   const handleLogout = () => {
     showInfoToast("Logged Out", "You have been successfully logged out.")
     setTimeout(() => {
       router.push("/")
     }, 1000)
-  }
-
-  const handleFullscreen = () => {
-    if (videoRef.current) {
-      if (videoRef.current.requestFullscreen) {
-        videoRef.current.requestFullscreen()
-      }
-    }
   }
 
   const resetWithdrawalForm = () => {
@@ -611,20 +622,46 @@ export default function DashboardPage() {
     setHasWatchedVideo(false)
   }, [currentVideoIndex])
 
-  // Handle Vimeo video end using postMessage API
+  // Load Vimeo API and track video progress
   useEffect(() => {
-    const handleVimeoMessage = (event: MessageEvent) => {
-      if (event.origin !== "https://player.vimeo.com") return
-      
-      const data = JSON.parse(event.data)
-      if (data.event === "finish") {
-        handleVideoEnded()
-      }
+    // Load Vimeo API script
+    if (!(window as any).Vimeo) {
+      const script = document.createElement("script")
+      script.src = "https://player.vimeo.com/api/player.js"
+      document.body.appendChild(script)
     }
 
-    window.addEventListener("message", handleVimeoMessage)
-    return () => window.removeEventListener("message", handleVimeoMessage)
-  }, [hasWatchedVideo, currentVideoIndex, userActivity, balance])
+    // Wait for Vimeo API to load and initialize player
+    setTimeout(() => {
+      const iframe = document.querySelector('iframe[src*="vimeo"]') as HTMLIFrameElement
+      if (iframe && (window as any).Vimeo) {
+        const player = new (window as any).Vimeo.Player(iframe)
+
+        // Track video time
+        player.on("timeupdate", (data: any) => {
+          setCurrentTime(data.seconds)
+        })
+
+        // Track video duration
+        player.on("loadedmetadata", () => {
+          player.getDuration().then((dur: number) => {
+            setDuration(dur)
+          })
+        })
+
+        // Handle video end
+        player.on("ended", () => {
+          handleVideoEnded()
+        })
+
+        // Auto-play on load
+        player.play().catch(() => {
+          // Autoplay may fail due to browser policies
+          console.log("[v0] Autoplay blocked by browser")
+        })
+      }
+    }, 500)
+  }, [currentVideoIndex, hasWatchedVideo, userActivity, balance])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-400 via-blue-500 to-purple-600 p-4">
@@ -682,7 +719,7 @@ export default function DashboardPage() {
         <div className="bg-black rounded-lg overflow-hidden relative">
           <iframe
             key={currentVideoIndex}
-            src={`https://player.vimeo.com/video/${videoUrls[currentVideoIndex]}?h=4c0c26e4e1&autoplay=1`}
+            src={`https://player.vimeo.com/video/${videoUrls[currentVideoIndex]}?h=4c0c26e4e1&autoplay=0&title=0&byline=0&portrait=0`}
             className="w-full aspect-video"
             allow="autoplay; fullscreen; picture-in-picture"
             allowFullScreen
