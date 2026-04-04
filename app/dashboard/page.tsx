@@ -248,14 +248,24 @@ export default function DashboardPage() {
     "Xpress Payments Microfinance Bank",
   ]
 
-  // Vimeo videos - Embedded directly in dashboard
-  const videoUrls = [
+  // Vimeo videos - Embedded directly in dashboard (shuffled)
+  const videoUrlsOriginal = [
     "1179097379",
     "1174786241",
     "1158427919",
     "688796585",
     "375982352",
   ]
+  
+  // Shuffle videos on mount
+  const [videoUrls] = useState(() => {
+    const shuffled = [...videoUrlsOriginal]
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+    }
+    return shuffled
+  })
 
   // Subscription plans
   const subscriptionPlans = [
@@ -460,18 +470,12 @@ export default function DashboardPage() {
     }
   }
 
-  const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
-    // Seek functionality for Vimeo player
-    const progressDiv = e.currentTarget
-    const rect = progressDiv.getBoundingClientRect()
-    const percentage = (e.clientX - rect.left) / rect.width
-    const newTime = percentage * duration
-    
-    const iframe = document.querySelector('iframe[src*="vimeo"]') as HTMLIFrameElement
-    if (iframe && (window as any).Vimeo) {
-      const player = new (window as any).Vimeo.Player(iframe)
-      player.setCurrentTime(newTime)
-    }
+  const handleLogout = () => {
+    showInfoToast("Logged Out", "You have been successfully logged out.")
+    setTimeout(() => {
+      router.push("/")
+    }, 1000)
+  }
   }
 
   const handleFullscreen = () => {
@@ -483,30 +487,7 @@ export default function DashboardPage() {
 
   // Vimeo videos handle their own controls and playback
 
-  const handleVideoEnded = () => {
-    if (!hasWatchedVideo) {
-      const earnings = 12000
-      setBalance((prev) => prev + earnings)
-      setHasWatchedVideo(true)
-      setIsPlaying(false)
 
-      // Update user activity
-      updateUserActivity({
-        videosWatched: userActivity.videosWatched + 1,
-        totalEarnings: userActivity.totalEarnings + earnings,
-      })
-
-      showSuccessToast("Video Completed!", `You earned ₦${earnings.toLocaleString()} for watching this video!`)
-
-      setTimeout(() => {
-        const nextIndex = Math.floor(Math.random() * videoUrls.length)
-        setCurrentVideoIndex(nextIndex)
-        setHasWatchedVideo(false)
-        setCurrentTime(0)
-        setDuration(0)
-      }, 2000)
-    }
-  }
 
   const handleVideoError = () => {
     console.log("[v0] Loading next video")
@@ -632,9 +613,10 @@ export default function DashboardPage() {
     }
 
     // Wait for Vimeo API to load and initialize player
-    setTimeout(() => {
-      const iframe = document.querySelector('iframe[src*="vimeo"]') as HTMLIFrameElement
-      if (iframe && (window as any).Vimeo) {
+    const timeout = setTimeout(() => {
+      const iframes = document.querySelectorAll('iframe[src*="vimeo"]')
+      if (iframes.length > 0 && (window as any).Vimeo) {
+        const iframe = iframes[iframes.length - 1] as HTMLIFrameElement
         const player = new (window as any).Vimeo.Player(iframe)
 
         // Track video time
@@ -649,19 +631,36 @@ export default function DashboardPage() {
           })
         })
 
-        // Handle video end
-        player.on("ended", () => {
-          handleVideoEnded()
-        })
+        // Handle video end - this is critical for earnings
+        const endedHandler = () => {
+          console.log("[v0] Video ended event fired")
+          if (!hasWatchedVideo) {
+            const earnings = 12000
+            setBalance((prev) => prev + earnings)
+            setHasWatchedVideo(true)
+            showSuccessToast("Video Completed!", `You earned ₦${earnings.toLocaleString()} for watching this video!`)
+            
+            setTimeout(() => {
+              const nextIndex = Math.floor(Math.random() * videoUrls.length)
+              setCurrentVideoIndex(nextIndex)
+              setHasWatchedVideo(false)
+              setCurrentTime(0)
+              setDuration(0)
+            }, 2000)
+          }
+        }
+        
+        player.on("ended", endedHandler)
 
         // Auto-play on load
         player.play().catch(() => {
-          // Autoplay may fail due to browser policies
           console.log("[v0] Autoplay blocked by browser")
         })
       }
     }, 500)
-  }, [currentVideoIndex, hasWatchedVideo, userActivity, balance])
+
+    return () => clearTimeout(timeout)
+  }, [currentVideoIndex, hasWatchedVideo, videoUrls])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-400 via-blue-500 to-purple-600 p-4">
