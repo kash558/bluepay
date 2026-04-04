@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Play, Pause, Volume2, Maximize, MoreVertical, LogOut, X, CreditCard } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -453,13 +453,6 @@ export default function DashboardPage() {
   }
 
   // Vimeo videos handle their own controls and playback
-  }
-
-  const handleLoadedMetadata = () => {
-    if (videoRef.current) {
-      setDuration(videoRef.current.duration)
-    }
-  }
 
   const handleVideoEnded = () => {
     if (!hasWatchedVideo) {
