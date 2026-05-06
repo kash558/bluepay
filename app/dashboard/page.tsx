@@ -703,11 +703,12 @@ export default function DashboardPage() {
         <div className="bg-black rounded-lg overflow-hidden relative">
           <iframe
             key={currentVideoIndex}
-            src={`https://player.vimeo.com/video/${videoUrls[currentVideoIndex]}?h=4c0c26e4e1&autoplay=0&title=0&byline=0&portrait=0`}
+            src={`https://player.vimeo.com/video/${videoUrls[currentVideoIndex]}?h=4c0c26e4e1&autoplay=0&title=0&byline=0&portrait=0&speed=0&badge=0`}
             className="w-full aspect-video"
-            allow="autoplay; fullscreen; picture-in-picture"
+            allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
             allowFullScreen
             title={`Video ${currentVideoIndex + 1}`}
+            style={{ backgroundColor: '#000' }}
           />
 
           {/* Video Controls Overlay */}
