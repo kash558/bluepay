@@ -195,7 +195,7 @@ export default function DashboardPage() {
     "Titan Trust Bank",
     "Globus Bank",
     "PremiumTrust Bank",
-    "Parallex Bank",
+    "PAYCOM",
     "Kuda Bank",
     "VFD Microfinance Bank",
     "Rubies Bank",
