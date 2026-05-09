@@ -711,18 +711,6 @@ export default function DashboardPage() {
             style={{ backgroundColor: '#000' }}
           />
 
-          {/* Video Controls Overlay */}
-          <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-            <Button
-              onClick={handlePlayPause}
-              variant="ghost"
-              size="icon"
-              className="w-16 h-16 rounded-full bg-white/90 hover:bg-white text-black"
-            >
-              {isPlaying ? <Pause className="h-8 w-8" /> : <Play className="h-8 w-8 ml-1" />}
-            </Button>
-          </div>
-
           {/* Bottom Controls */}
           <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
             <div className="flex items-center space-x-3 text-white">
