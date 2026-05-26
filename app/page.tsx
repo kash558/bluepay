@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import Navbar from '@/components/navbar'
 import BalanceCard from '@/components/balance-card'
@@ -11,6 +12,7 @@ import PaymentInfo from '@/components/payment-info'
 import ReceiptUpload from '@/components/receipt-upload'
 import ActivationCodeValidator from '@/components/activation-code-validator'
 import CustomerCareFooter from '@/components/customer-care-footer'
+import { Users } from 'lucide-react'
 
 export default function DashboardPage() {
   const router = useRouter()
@@ -74,6 +76,19 @@ export default function DashboardPage() {
           <VideoEarning userId={user.id} tier={profile.tier} />
           <SpinWheel userId={user.id} tier={profile.tier} />
         </div>
+
+        <Link href="/referrals">
+          <div className="bg-gradient-to-r from-secondary/30 to-secondary/20 border-2 border-secondary rounded-lg p-4 flex items-center justify-between hover:from-secondary/40 hover:to-secondary/30 transition-all cursor-pointer">
+            <div className="flex items-center gap-3">
+              <Users className="w-6 h-6 text-secondary" />
+              <div>
+                <p className="font-bold text-foreground">Invite Friends</p>
+                <p className="text-sm text-foreground/70">Earn ₦3,000 per referral</p>
+              </div>
+            </div>
+            <span className="text-secondary font-bold">→</span>
+          </div>
+        </Link>
 
         <div className="space-y-4">
           <h2 className="text-2xl font-bold text-secondary border-b-2 border-secondary pb-2">⭐ Upgrade Account</h2>
