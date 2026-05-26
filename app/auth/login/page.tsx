@@ -24,19 +24,44 @@ export default function Page() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    const supabase = createClient()
     setIsLoading(true)
     setError(null)
 
     try {
+      if (!email || !password) {
+        throw new Error('Please fill in all fields')
+      }
+
+      const supabase = createClient()
+      
+      if (!supabase) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
+      console.log('[v0] Login attempt with email:', email)
+      
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
-      if (error) throw error
+      
+      if (error) {
+        console.error('[v0] Auth error:', error)
+        throw new Error(error.message || 'Login failed')
+      }
+      
+      console.log('[v0] Login successful, redirecting...')
       router.push('/')
     } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : 'An error occurred')
+      let errorMsg = 'An error occurred'
+      if (error instanceof Error) {
+        errorMsg = error.message
+      } else if (typeof error === 'string') {
+        errorMsg = error
+      }
+      
+      console.error('[v0] Login exception:', errorMsg, error)
+      setError(errorMsg)
     } finally {
       setIsLoading(false)
     }

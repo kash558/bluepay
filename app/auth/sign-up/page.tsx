@@ -25,9 +25,14 @@ export default function Page() {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault()
-    const supabase = createClient()
     setIsLoading(true)
     setError(null)
+
+    if (!email || !password || !repeatPassword) {
+      setError('Please fill in all fields')
+      setIsLoading(false)
+      return
+    }
 
     if (password !== repeatPassword) {
       setError('Passwords do not match')
@@ -35,15 +40,43 @@ export default function Page() {
       return
     }
 
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters')
+      setIsLoading(false)
+      return
+    }
+
     try {
+      const supabase = createClient()
+      
+      if (!supabase) {
+        throw new Error('Supabase client not initialized. Check environment variables.')
+      }
+      
+      console.log('[v0] Sign-up attempt with email:', email)
+      
       const { error } = await supabase.auth.signUp({
         email,
         password,
       })
-      if (error) throw error
+      
+      if (error) {
+        console.error('[v0] Auth error:', error)
+        throw new Error(error.message || 'Sign-up failed')
+      }
+      
+      console.log('[v0] Sign-up successful, redirecting...')
       router.push('/')
     } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : 'An error occurred')
+      let errorMsg = 'An error occurred'
+      if (error instanceof Error) {
+        errorMsg = error.message
+      } else if (typeof error === 'string') {
+        errorMsg = error
+      }
+      
+      console.error('[v0] Sign-up exception:', errorMsg, error)
+      setError(errorMsg)
     } finally {
       setIsLoading(false)
     }
