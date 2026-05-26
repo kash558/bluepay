@@ -1,6 +1,6 @@
 'use client'
 
-import { createClient } from '@/lib/supabase/client'
+import { authStorage } from '@/lib/storage'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -32,24 +32,13 @@ export default function Page() {
         throw new Error('Please fill in all fields')
       }
 
-      const supabase = createClient()
-      
-      if (!supabase) {
-        throw new Error('Supabase client not initialized. Check environment variables.')
+      const user = authStorage.getUser()
+      const savedPassword = authStorage.getPassword()
+
+      if (!user || user.email !== email || savedPassword !== password) {
+        throw new Error('Invalid email or password')
       }
-      
-      console.log('[v0] Login attempt with email:', email)
-      
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      })
-      
-      if (error) {
-        console.error('[v0] Auth error:', error)
-        throw new Error(error.message || 'Login failed')
-      }
-      
+
       console.log('[v0] Login successful, redirecting...')
       router.push('/')
     } catch (error: unknown) {
@@ -59,8 +48,8 @@ export default function Page() {
       } else if (typeof error === 'string') {
         errorMsg = error
       }
-      
-      console.error('[v0] Login exception:', errorMsg, error)
+
+      console.error('[v0] Login exception:', errorMsg)
       setError(errorMsg)
     } finally {
       setIsLoading(false)

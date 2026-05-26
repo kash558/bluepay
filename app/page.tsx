@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/client'
+import { authStorage, profileStorage } from '@/lib/storage'
 import Navbar from '@/components/navbar'
 import BalanceCard from '@/components/balance-card'
 import VideoEarning from '@/components/video-earning'
@@ -21,26 +21,23 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const checkAuth = async () => {
+    const checkAuth = () => {
       try {
-        const supabase = createClient()
-        const { data: { user } } = await supabase.auth.getUser()
+        const user = authStorage.getUser()
         
         if (!user) {
           router.push('/auth/login')
           return
         }
 
+        const profile = profileStorage.getProfile()
+        if (!profile) {
+          router.push('/auth/login')
+          return
+        }
+
         setUser(user)
-
-        // Fetch profile data
-        const { data: profileData } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', user.id)
-          .single()
-
-        setProfile(profileData)
+        setProfile(profile)
       } catch (error) {
         console.error('Error checking auth:', error)
         router.push('/auth/login')

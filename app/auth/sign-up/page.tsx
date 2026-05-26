@@ -1,6 +1,6 @@
 'use client'
 
-import { createClient } from '@/lib/supabase/client'
+import { authStorage, profileStorage, generateId, generateReferralCode } from '@/lib/storage'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -47,24 +47,27 @@ export default function Page() {
     }
 
     try {
-      const supabase = createClient()
-      
-      if (!supabase) {
-        throw new Error('Supabase client not initialized. Check environment variables.')
+      const existingUser = authStorage.getUser()
+      if (existingUser && existingUser.email === email) {
+        throw new Error('This email is already registered')
       }
-      
-      console.log('[v0] Sign-up attempt with email:', email)
-      
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
+
+      const userId = generateId()
+      const referralCode = generateReferralCode(userId)
+
+      authStorage.setUser({ id: userId, email })
+      authStorage.setPassword(password)
+
+      profileStorage.setProfile({
+        id: userId,
+        tier: 'Free',
+        balance: 4000,
+        referral_code: referralCode,
+        referral_earnings: 0,
+        is_banned: false,
+        created_at: new Date().toISOString(),
       })
-      
-      if (error) {
-        console.error('[v0] Auth error:', error)
-        throw new Error(error.message || 'Sign-up failed')
-      }
-      
+
       console.log('[v0] Sign-up successful, redirecting...')
       router.push('/')
     } catch (error: unknown) {
@@ -74,8 +77,8 @@ export default function Page() {
       } else if (typeof error === 'string') {
         errorMsg = error
       }
-      
-      console.error('[v0] Sign-up exception:', errorMsg, error)
+
+      console.error('[v0] Sign-up exception:', errorMsg)
       setError(errorMsg)
     } finally {
       setIsLoading(false)

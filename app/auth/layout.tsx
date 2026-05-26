@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
+import { authStorage } from '@/lib/storage'
 import CashloopLoading from '@/components/cashloop-loading'
 
 export default function AuthLayout({
@@ -14,13 +14,9 @@ export default function AuthLayout({
   const [isChecking, setIsChecking] = useState(true)
 
   useEffect(() => {
-    const checkAuth = async () => {
+    const checkAuth = () => {
       try {
-        const supabase = createClient()
-        const { data: { session } } = await supabase.auth.getSession()
-        
-        if (session) {
-          // User is already logged in, redirect to home
+        if (authStorage.isLoggedIn()) {
           router.push('/')
         }
       } catch (error) {

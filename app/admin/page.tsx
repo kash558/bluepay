@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
+import { authStorage } from '@/lib/storage'
 import AdminHeader from '@/components/admin/admin-header'
 import UserManagement from '@/components/admin/user-management'
 import ReceiptApproval from '@/components/admin/receipt-approval'
@@ -15,10 +15,9 @@ export default function AdminPage() {
   const [activeTab, setActiveTab] = useState('users')
 
   useEffect(() => {
-    const checkAdminAccess = async () => {
+    const checkAdminAccess = () => {
       try {
-        const supabase = createClient()
-        const { data: { user } } = await supabase.auth.getUser()
+        const user = authStorage.getUser()
         
         if (!user) {
           router.push('/auth/login')

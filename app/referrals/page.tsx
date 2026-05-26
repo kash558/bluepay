@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
+import { authStorage, profileStorage, referralStorage } from '@/lib/storage'
 import Navbar from '@/components/navbar'
 import CustomerCareFooter from '@/components/customer-care-footer'
 import ReferralCard from '@/components/referral-card'
@@ -33,31 +33,23 @@ export default function ReferralsPage() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchData = () => {
       try {
-        const supabase = createClient()
-        const { data: { user } } = await supabase.auth.getUser()
+        const user = authStorage.getUser()
         if (!user) {
           router.push('/auth/login')
           return
         }
 
-        const { data: profileData, error: profileError } = await supabase
-          .from('profiles')
-          .select('id, tier, balance, referral_code, referral_earnings')
-          .eq('id', user.id)
-          .single()
+        const profileData = profileStorage.getProfile()
+        if (!profileData) {
+          router.push('/auth/login')
+          return
+        }
 
-        if (profileError) throw profileError
         setProfile(profileData)
 
-        const { data: referralData, error: referralError } = await supabase
-          .from('referrals')
-          .select('id, referred_id, status, bonus_amount, created_at')
-          .eq('referrer_id', user.id)
-          .order('created_at', { ascending: false })
-
-        if (referralError) throw referralError
+        const referralData = referralStorage.getUserReferrals(user.id)
         setReferrals(referralData || [])
       } catch (err) {
         console.error('[v0] Referral fetch error:', err)

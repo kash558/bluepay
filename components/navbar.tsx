@@ -1,6 +1,6 @@
 'use client'
 
-import { createClient } from '@/lib/supabase/client'
+import { authStorage } from '@/lib/storage'
 import { LogOut } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
@@ -11,15 +11,10 @@ interface NavbarProps {
 
 export default function Navbar({ user, profile }: NavbarProps) {
   const router = useRouter()
-  const supabase = createClient()
 
-  const handleLogout = async () => {
-    try {
-      await supabase.auth.signOut()
-      router.push('/auth/login')
-    } catch (error) {
-      console.error('Error logging out:', error)
-    }
+  const handleLogout = () => {
+    authStorage.logout()
+    router.push('/auth/login')
   }
 
   return (
