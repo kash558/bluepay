@@ -26,7 +26,6 @@ interface Referral {
 }
 
 export default function ReferralsPage() {
-  const supabase = createClient()
   const router = useRouter()
   const [profile, setProfile] = useState<Profile | null>(null)
   const [referrals, setReferrals] = useState<Referral[]>([])
@@ -36,6 +35,7 @@ export default function ReferralsPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const supabase = createClient()
         const { data: { user } } = await supabase.auth.getUser()
         if (!user) {
           router.push('/auth/login')
@@ -68,15 +68,12 @@ export default function ReferralsPage() {
     }
 
     fetchData()
-  }, [supabase, router])
+  }, [router])
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background">
-        <Navbar />
-        <div className="max-w-md mx-auto px-4 py-8 flex items-center justify-center h-96">
-          <p className="text-muted-foreground">Loading referral data...</p>
-        </div>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <p className="text-muted-foreground">Loading referral data...</p>
       </div>
     )
   }
@@ -84,7 +81,6 @@ export default function ReferralsPage() {
   if (error || !profile) {
     return (
       <div className="min-h-screen bg-background">
-        <Navbar />
         <div className="max-w-md mx-auto px-4 py-8">
           <div className="bg-destructive/20 border border-destructive rounded-lg p-4 text-destructive text-sm">
             {error || 'Failed to load referral information'}
@@ -99,7 +95,7 @@ export default function ReferralsPage() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <Navbar />
+      <Navbar user={{ id: profile.id }} profile={profile} />
       
       <div className="max-w-md mx-auto px-4 py-8 space-y-8 flex-1">
         <div>

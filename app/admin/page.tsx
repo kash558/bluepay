@@ -10,7 +10,6 @@ import CodeGenerator from '@/components/admin/code-generator'
 
 export default function AdminPage() {
   const router = useRouter()
-  const supabase = createClient()
   const [isAdmin, setIsAdmin] = useState(false)
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState('users')
@@ -18,6 +17,7 @@ export default function AdminPage() {
   useEffect(() => {
     const checkAdminAccess = async () => {
       try {
+        const supabase = createClient()
         const { data: { user } } = await supabase.auth.getUser()
         
         if (!user) {
@@ -43,7 +43,7 @@ export default function AdminPage() {
     }
 
     checkAdminAccess()
-  }, [router, supabase])
+  }, [router])
 
   if (loading) {
     return (

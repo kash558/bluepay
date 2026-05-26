@@ -16,7 +16,6 @@ import { Users } from 'lucide-react'
 
 export default function DashboardPage() {
   const router = useRouter()
-  const supabase = createClient()
   const [user, setUser] = useState<any>(null)
   const [profile, setProfile] = useState<any>(null)
   const [loading, setLoading] = useState(true)
@@ -24,6 +23,7 @@ export default function DashboardPage() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
+        const supabase = createClient()
         const { data: { user } } = await supabase.auth.getUser()
         
         if (!user) {
@@ -50,7 +50,7 @@ export default function DashboardPage() {
     }
 
     checkAuth()
-  }, [router, supabase])
+  }, [router])
 
   if (loading) {
     return (
