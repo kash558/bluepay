@@ -18,7 +18,7 @@ export default function CashTubePage() {
   const [showInvalidModal, setShowInvalidModal] = useState(false)
   const [showBuyPasscodeModal, setShowBuyPasscodeModal] = useState(false)
   const [currentTestimonial, setCurrentTestimonial] = useState<Testimonial | null>(null)
-  const [showInitialWelcome, setShowInitialWelcome] = useState(true)
+  const [showInitialWelcome, setShowInitialWelcome] = useState(false)
   const [showMobileMenu, setShowMobileMenu] = useState(false)
   const [showCryptoPaymentModal, setShowCryptoPaymentModal] = useState(false)
   const [isLoadingPaymentDetails, setIsLoadingPaymentDetails] = useState(false)
