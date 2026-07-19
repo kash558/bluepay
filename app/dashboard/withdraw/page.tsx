@@ -357,10 +357,10 @@ export default function WithdrawPage() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-5 md:space-y-6">
             {/* Account Number */}
             <div>
-              <label className="block text-sm font-semibold text-gray-800 mb-2">Account Number</label>
+              <label className="block text-base md:text-lg font-bold text-gray-900 mb-3">Account Number</label>
               <Input
                 type="text"
                 name="accountNumber"
@@ -368,40 +368,40 @@ export default function WithdrawPage() {
                 value={formData.accountNumber}
                 onChange={handleChange}
                 maxLength={10}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-700 placeholder-gray-400"
+                className="w-full h-13 md:h-14 px-4 py-3 border-2 border-gray-300 rounded-lg text-base md:text-lg font-semibold text-gray-900 placeholder-gray-500 placeholder:font-semibold focus:border-[#27c26c] transition"
               />
               {accountNameLoading && formData.accountNumber.length === 10 && (
-                <p className="text-xs text-gray-500 mt-2">Generating account name...</p>
+                <p className="text-xs text-gray-600 font-semibold mt-2">Generating account name...</p>
               )}
               {generatedAccountName && !manualAccountName && (
-                <p className="text-xs text-green-600 mt-2">✓ {generatedAccountName}</p>
+                <p className="text-xs text-green-600 font-bold mt-2">✓ {generatedAccountName}</p>
               )}
             </div>
 
             {/* Bank Name - Searchable Dropdown */}
             <div className="relative">
-              <label className="block text-sm font-semibold text-gray-800 mb-2">Bank Name</label>
+              <label className="block text-base md:text-lg font-bold text-gray-900 mb-3">Bank Name</label>
               <button
                 type="button"
                 onClick={() => setShowBankDropdown(!showBankDropdown)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-700 bg-white cursor-pointer text-left flex items-center justify-between hover:border-gray-400 transition"
+                className="w-full h-13 md:h-14 px-4 py-3 border-2 border-gray-300 rounded-lg text-gray-900 bg-white cursor-pointer text-left flex items-center justify-between hover:border-[#27c26c] transition font-semibold text-base md:text-lg"
               >
-                <span className={formData.bankName ? "text-gray-700 font-medium" : "text-gray-400"}>
+                <span className={formData.bankName ? "text-gray-900 font-bold" : "text-gray-500 font-semibold"}>
                   {formData.bankName || "Search or select bank..."}
                 </span>
-                <Search className="w-4 h-4 text-gray-400" />
+                <Search className="w-5 h-5 text-gray-600" />
               </button>
 
               {showBankDropdown && (
-                <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg z-50 max-h-64 overflow-hidden flex flex-col">
+                <div className="absolute top-full left-0 right-0 mt-2 bg-white border-2 border-gray-300 rounded-lg shadow-lg z-50 max-h-64 overflow-hidden flex flex-col">
                   {/* Search Input */}
-                  <div className="p-3 border-b border-gray-200 sticky top-0 bg-white">
+                  <div className="p-3 border-b-2 border-gray-300 sticky top-0 bg-white">
                     <input
                       type="text"
                       placeholder="Search banks..."
                       value={bankSearchQuery}
                       onChange={(e) => setBankSearchQuery(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-[#27c26c]"
+                      className="w-full px-3 py-2 border-2 border-gray-300 rounded-lg text-sm font-semibold focus:outline-none focus:border-[#27c26c]"
                       autoFocus
                     />
                   </div>
@@ -418,17 +418,17 @@ export default function WithdrawPage() {
                             setShowBankDropdown(false)
                             setBankSearchQuery("")
                           }}
-                          className={`w-full px-4 py-3 text-left text-sm hover:bg-green-50 transition ${
+                          className={`w-full px-4 py-3 text-left text-sm font-semibold hover:bg-green-50 transition ${
                             formData.bankName === bank
-                              ? "bg-[#27c26c] text-white font-medium"
-                              : "text-gray-700 hover:text-[#27c26c]"
+                              ? "bg-[#27c26c] text-white font-bold"
+                              : "text-gray-800 hover:text-[#27c26c]"
                           }`}
                         >
                           {bank}
                         </button>
                       ))
                     ) : (
-                      <div className="px-4 py-6 text-center text-gray-500 text-sm">
+                      <div className="px-4 py-6 text-center text-gray-600 text-sm font-semibold">
                         No banks found
                       </div>
                     )}
@@ -439,7 +439,7 @@ export default function WithdrawPage() {
 
             {/* Account Name */}
             <div>
-              <label className="block text-sm font-semibold text-gray-800 mb-2">
+              <label className="block text-base md:text-lg font-bold text-gray-900 mb-3">
                 Account Name {!manualAccountName && generatedAccountName && "(Auto-generated)"}
               </label>
               <Input
@@ -452,29 +452,29 @@ export default function WithdrawPage() {
                   handleChange(e)
                 }}
                 onFocus={handleAccountNameEdit}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-700 placeholder-gray-400"
+                className="w-full h-13 md:h-14 px-4 py-3 border-2 border-gray-300 rounded-lg text-base md:text-lg font-semibold text-gray-900 placeholder-gray-500 placeholder:font-semibold focus:border-[#27c26c] transition"
               />
               {manualAccountName && (
-                <p className="text-xs text-blue-600 mt-1">Manually edited</p>
+                <p className="text-xs text-blue-600 font-bold mt-1">Manually edited</p>
               )}
             </div>
 
             {/* Amount */}
             <div>
-              <label className="block text-sm font-semibold text-gray-800 mb-2">Amount</label>
+              <label className="block text-base md:text-lg font-bold text-gray-900 mb-3">Amount</label>
               <Input
                 type="text"
                 name="amount"
                 placeholder="Enter amount"
                 value={formData.amount}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-700 placeholder-gray-400"
+                className="w-full h-13 md:h-14 px-4 py-3 border-2 border-gray-300 rounded-lg text-base md:text-lg font-semibold text-gray-900 placeholder-gray-500 placeholder:font-semibold focus:border-[#27c26c] transition"
               />
             </div>
 
             {/* Fair Code */}
             <div>
-              <label className="block text-sm font-semibold text-gray-800 mb-2">Fair Code</label>
+              <label className="block text-base md:text-lg font-bold text-gray-900 mb-3">Fair Code</label>
               <Input
                 type="text"
                 name="fairCode"
@@ -485,23 +485,23 @@ export default function WithdrawPage() {
                   setFairCodeError("")
                 }}
                 onBlur={handleFairCodeValidation}
-                className={`w-full px-4 py-3 border rounded-lg text-gray-700 placeholder-gray-400 ${fairCodeError ? "border-red-500" : "border-gray-300"
+                className={`w-full h-13 md:h-14 px-4 py-3 border-2 rounded-lg text-base md:text-lg font-semibold text-gray-900 placeholder-gray-500 placeholder:font-semibold transition ${fairCodeError ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-[#27c26c]"
                   }`}
               />
               {fairCodeError && (
-                <p className="text-xs text-red-600 mt-2">✕ {fairCodeError}</p>
+                <p className="text-sm text-red-600 font-bold mt-2">✕ {fairCodeError}</p>
               )}
             </div>
 
             {/* Available Balance */}
-            <div className="py-4 text-center border-t border-gray-200">
-              <p className="text-[#1a9b5c] font-bold text-lg">Available Balance: ₦250,000.00</p>
+            <div className="py-4 md:py-5 text-center border-t-2 border-gray-300">
+              <p className="text-[#1a9b5c] font-bold text-lg md:text-xl">Available Balance: ₦250,000.00</p>
             </div>
 
             {/* Submit Button */}
             <Button
               type="submit"
-              className="w-full py-3 bg-[#27c26c] hover:bg-[#1fa857] text-white font-bold rounded-full text-base"
+              className="w-full h-14 md:h-16 text-lg md:text-xl bg-gradient-to-r from-[#1a9b5c] to-[#27c26c] hover:from-[#168a4f] hover:to-[#20a85a] text-white font-bold rounded-full shadow-lg transition-all"
             >
               Proceed
             </Button>

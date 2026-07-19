@@ -18,13 +18,13 @@ export default function InvitationPage() {
   }, [])
 
   const handleCopyLink = () => {
-    navigator.clipboard.writeText("https://fairmonie-verify-legit-pay.vercel.app")
+    navigator.clipboard.writeText("https://fairmoneypay.vercel.app")
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
 
   const handleShareWhatsApp = () => {
-    const text = "Join FairMonie Pay and earn ₦6,500 for each successful referral! Use my link: https://fairmonie-verify-legit-pay.vercel.app"
+    const text = "Join FairMonie Pay and earn ₦6,500 for each successful referral! Use my link: https://fairmoneypay.vercel.app"
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank")
   }
 
@@ -113,7 +113,7 @@ export default function InvitationPage() {
             <div className="flex items-center gap-2 bg-[#f5f6f7] rounded-lg p-3">
               <input
                 type="text"
-                value="https://fairmonie-verify-legit-pay.vercel.app"
+                value="https://fairmoneypay.vercel.app"
                 readOnly
                 className="flex-1 bg-transparent text-gray-900 text-xs sm:text-sm outline-none"
               />

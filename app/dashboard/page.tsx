@@ -432,8 +432,8 @@ export default function Dashboard() {
               </div>
 
               <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-3">Welcome Bonus</h2>
-                <p className="text-gray-600">Claim your one-time welcome bonus of ₦250,000!</p>
+                <h2 className="text-3xl font-bold text-[#1a9b5c] mb-3">Welcome Bonus</h2>
+                <p className="text-gray-800 font-bold text-lg">Claim your one-time welcome bonus of ₦250,000!</p>
               </div>
 
               <div className="flex gap-4">
@@ -495,8 +495,8 @@ export default function Dashboard() {
               </div>
 
               <div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-3">Success!</h2>
-                <p className="text-gray-600">Successfully claimed FairMonie bonus of ₦250,000 Naira</p>
+                <h2 className="text-4xl font-bold text-[#1a9b5c] mb-3">Success! ✓</h2>
+                <p className="text-gray-800 font-bold text-lg">Successfully claimed FairMonie bonus of <span className="text-[#27c26c] text-2xl">₦250,000</span> Naira</p>
               </div>
 
               <Button
@@ -534,9 +534,9 @@ export default function Dashboard() {
               </div>
 
               <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-3">Welcome Bonus</h2>
-                <p className="text-gray-600">Claim your one-time welcome bonus of ₦250,000!</p>
-                <p className="text-red-500 font-semibold mt-3">Upgrade your account for next claim</p>
+                <h2 className="text-3xl font-bold text-[#1a9b5c] mb-3">Welcome Bonus</h2>
+                <p className="text-gray-800 font-bold text-lg">Claim your one-time welcome bonus of ₦250,000!</p>
+                <p className="text-red-600 font-bold text-lg mt-3">Upgrade your account for next claim</p>
               </div>
 
               <div className="flex gap-4">
