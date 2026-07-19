@@ -46,43 +46,39 @@ export default function GroupsPage() {
 
         {/* Community Options */}
         <div className="space-y-4">
-          {/* Telegram Link */}
-          <a
-            href="https://t.me/fairmonieofficialchannel"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-6 border border-gray-200 rounded-2xl hover:shadow-lg hover:border-blue-300 transition-all"
+          {/* Telegram Button */}
+          <button
+            onClick={() => window.open("https://t.me/fairmonieofficialchannel", "_blank")}
+            className="w-full p-6 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-2xl shadow-lg hover:shadow-xl transition-all active:scale-95 font-semibold"
           >
             <div className="flex gap-4 items-center">
-              <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center text-2xl flex-shrink-0">
+              <div className="w-16 h-16 rounded-full bg-white bg-opacity-20 flex items-center justify-center text-3xl flex-shrink-0">
                 ✈️
               </div>
-              <div className="flex-1">
-                <h3 className="text-xl font-bold text-gray-900 mb-1">Telegram Channel</h3>
-                <p className="text-gray-600 text-sm">Join our Telegram community for updates and exclusive content</p>
+              <div className="flex-1 text-left">
+                <h3 className="text-xl font-bold mb-1">Telegram Channel</h3>
+                <p className="text-blue-100 text-sm">Join our Telegram community for updates and exclusive content</p>
               </div>
-              <div className="text-2xl">→</div>
+              <div className="text-3xl">→</div>
             </div>
-          </a>
+          </button>
 
-          {/* WhatsApp Link */}
-          <a
-            href="https://whatsapp.com/channel/0029VbBPGiv0G0XfRUvkEH1t"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-6 border border-gray-200 rounded-2xl hover:shadow-lg hover:border-green-300 transition-all"
+          {/* WhatsApp Button */}
+          <button
+            onClick={() => window.open("https://whatsapp.com/channel/0029VbBPGiv0G0XfRUvkEH1t", "_blank")}
+            className="w-full p-6 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-2xl shadow-lg hover:shadow-xl transition-all active:scale-95 font-semibold"
           >
             <div className="flex gap-4 items-center">
-              <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center text-2xl flex-shrink-0">
+              <div className="w-16 h-16 rounded-full bg-white bg-opacity-20 flex items-center justify-center text-3xl flex-shrink-0">
                 💬
               </div>
-              <div className="flex-1">
-                <h3 className="text-xl font-bold text-gray-900 mb-1">WhatsApp Group</h3>
-                <p className="text-gray-600 text-sm">Connect with our WhatsApp community for instant updates</p>
+              <div className="flex-1 text-left">
+                <h3 className="text-xl font-bold mb-1">WhatsApp Group</h3>
+                <p className="text-green-100 text-sm">Connect with our WhatsApp community for instant updates</p>
               </div>
-              <div className="text-2xl">→</div>
+              <div className="text-3xl">→</div>
             </div>
-          </a>
+          </button>
         </div>
       </div>
 
