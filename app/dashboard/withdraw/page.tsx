@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { ChevronLeft } from "lucide-react"
+import { ChevronLeft, Search, X } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { FloatingChat } from "@/components/floating-chat"
@@ -23,26 +23,208 @@ export default function WithdrawPage() {
   const [fairCodeError, setFairCodeError] = useState("")
   const [successMessage, setSuccessMessage] = useState("")
   const [receipt, setReceipt] = useState<any>(null)
+  const [showBankDropdown, setShowBankDropdown] = useState(false)
+  const [bankSearchQuery, setBankSearchQuery] = useState("")
 
   const VALID_CODES = ["FAIR12999", "FAIR200612", "FAIR112299"]
 
   const banks = [
-    "GTBank",
-    "Access Bank",
-    "First Bank",
-    "UBA",
-    "Zenith Bank",
-    "Fidelity Bank",
-    "FCMB",
-    "Wema Bank",
-    "Stanbic IBTC",
-    "Opay",
-    "Kuda Bank",
-    "Mono Bank",
-    "Palmpay",
-    "OKash",
-    "Migo Loan",
+    // Commercial Banks
+    "Access Bank PLC",
+    "Citibank Nigeria Limited",
+    "Ecobank Nigeria PLC",
+    "Fidelity Bank PLC",
+    "First Bank of Nigeria Limited",
+    "First City Monument Bank PLC (FCMB)",
+    "Globus Bank Limited",
+    "Guaranty Trust Bank PLC (GTBank)",
+    "Keystone Bank Limited",
+    "Nova Commercial Bank Limited",
+    "Optimus Bank",
+    "Parallex Bank Limited",
+    "Polaris Bank PLC",
+    "PremiumTrust Bank",
+    "Providus Bank Limited",
+    "Signature Bank Limited",
+    "Stanbic IBTC Bank PLC",
+    "Standard Chartered Bank Nigeria Limited",
+    "Sterling Bank PLC",
+    "SunTrust Bank Nigeria Limited",
+    "Taj Bank Limited",
+    "Titan Trust Bank Limited",
+    "Union Bank of Nigeria Plc",
+    "United Bank for Africa Plc (UBA)",
+    "Unity Bank PLC",
+    "Wema Bank PLC",
+    "Zenith Bank PLC",
+    "Alpha Morgan Bank",
+    "Heritage Banking Company Limited",
+    "Lotus Bank",
+    "Jaiz Bank PLC",
+    // Fintech/Mobile Money
+    "OPay Digital Services Limited",
+    "PalmPay Limited",
+    "Kuda Microfinance Bank",
+    "Moniepoint Microfinance Bank",
+    "Carbon Microfinance Bank",
+    "FairMoney Microfinance Bank",
+    "RenMoney Microfinance Bank",
+    "VFD Microfinance Bank (VBank)",
+    "GoMoney",
+    "Sparkle Microfinance Bank",
+    "Eyowo Microfinance Bank",
+    "Rubies Bank",
+    "Tangerine Money",
+    "Mint Finex MFB",
+    "FINT",
+    "One Finance",
+    "SokoLoan",
+    "Branch International",
+    "Aella Credit",
+    "QuickCheck",
+    // Payment Service Banks
+    "Hope PSB",
+    "Momo Payment Service Bank",
+    "SmartCash PSB",
+    "Money Master PSB",
+    "9 Payment Service Bank",
+    // Microfinance Banks
+    "LAPO Microfinance Bank",
+    "ACCION Microfinance Bank",
+    "AB Microfinance Bank",
+    "Assets Microfinance Bank",
+    "Fina Trust Microfinance Bank",
+    "Mutual Trust Microfinance Bank",
+    "Mainstreet Microfinance Bank",
+    "Fortis Microfinance Bank",
+    "BOI Microfinance Bank",
+    "Fidelity MFB",
+    "Hasal Microfinance Bank",
+    "NIRSAL National Microfinance Bank",
+    "NPF Microfinance Bank",
+    "Ndiorah Microfinance Bank",
+    "Okpoga Microfinance Bank",
+    "Ohafia Microfinance Bank",
+    "Oche Microfinance Bank",
+    "Ikenne Microfinance Bank",
+    "Ikire Microfinance Bank",
+    "Ila Microfinance Bank",
+    "Ilasan Microfinance Bank",
+    "IMO Microfinance Bank",
+    "Infinity Microfinance Bank",
+    "Jessefield Microfinance Bank",
+    "KADPOLY Microfinance Bank",
+    "KCMB Microfinance Bank",
+    "Kontagora Microfinance Bank",
+    "Kredi Money Microfinance Bank",
+    "KWASU Microfinance Bank",
+    "Lavender Microfinance Bank",
+    "Legend Microfinance Bank",
+    "Letshego Microfinance Bank",
+    "Lovonus Microfinance Bank",
+    "Mainland Microfinance Bank",
+    "Malachy Microfinance Bank",
+    "Manny Microfinance Bank",
+    "Mayfair Microfinance Bank",
+    "Megapraise Microfinance Bank",
+    "Meridian Microfinance Bank",
+    "Microcred Microfinance Bank",
+    "Microvis Microfinance Bank",
+    "Molus Microfinance Bank",
+    "Moneytrust Microfinance Bank",
+    "Mutual Benefits Microfinance Bank",
+    "Nargata Microfinance Bank",
+    "Navy Microfinance Bank",
+    "Neptune Microfinance Bank",
+    "New Golden Pastures Microfinance Bank",
+    "Newdawn Microfinance Bank",
+    "Nnew Women Microfinance Bank",
+    "Nuture Microfinance Bank",
+    "Olabisi Onabanjo University Microfinance Bank",
+    "Olofin Owena Microfinance Bank",
+    "Oluchukwu Microfinance Bank",
+    "Oluyole Microfinance Bank",
+    "Omiye Microfinance Bank",
+    "Page Financials",
+    "Parrallex Microfinance Bank",
+    "Patrick Gold Microfinance Bank",
+    "Pecan Trust Microfinance Bank",
+    "Pennywise Microfinance Bank",
+    "Personal Trust Microfinance Bank",
+    "Petra Microfinance Bank",
+    "Pillar Microfinance Bank",
+    "Polyuwanna Microfinance Bank",
+    "Prestige Microfinance Bank",
+    "Purplemoney Microfinance Bank",
+    "Quickfund Microfinance Bank",
+    "Rahama Microfinance Bank",
+    "Regent Microfinance Bank",
+    "Reliance Microfinance Bank",
+    "Rephidim Microfinance Bank",
+    "Richway Microfinance Bank",
+    "Royal Exchange Microfinance Bank",
+    "Safetrust Microfinance Bank",
+    "Sagamu Microfinance Bank",
+    "Seed Capital Microfinance Bank",
+    "Seedvest Microfinance Bank",
+    "Stanford Microfinance Bank",
+    "Stellas Microfinance Bank",
+    "Sulsap Microfinance Bank",
+    "TCF Microfinance Bank",
+    "TF Microfinance Bank",
+    "Trident Microfinance Bank",
+    "Trust Microfinance Bank",
+    "Trustbanc J6 Microfinance Bank",
+    "Trustfund Microfinance Bank",
+    "U & C Microfinance Bank",
+    "UNAAB Microfinance Bank",
+    "UNIBEN Microfinance Bank",
+    "UNICAL Microfinance Bank",
+    "Union Microfinance Bank",
+    "UNN Microfinance Bank",
+    "Virtue Microfinance Bank",
+    "Visa Microfinance Bank",
+    "Wetland Microfinance Bank",
+    "YES Microfinance Bank",
+    // Mortgage Banks
+    "Abbey Mortgage Bank",
+    "AG Mortgage Bank PLC",
+    "Brent Mortgage Bank",
+    "Cooperative Mortgage Bank",
+    "Covenant Mortgage Bank",
+    "First Generation Mortgage Bank",
+    "Gateway Mortgage Bank",
+    "Haggai Mortgage Bank",
+    "HomeBase Mortgage Bank",
+    "Imperial Homes Mortgage Bank",
+    "Infinity Trust Mortgage Bank",
+    "LBIC Mortgage Bank",
+    "LivingTrust Mortgage Bank PLC",
+    "Mayfresh Mortgage Bank",
+    "Platinum Mortgage Bank",
+    "Refuge Mortgage Bank",
+    "STB Mortgage Bank",
+    // Merchant Banks
+    "Coronation Merchant Bank",
+    "FBNQuest Merchant Bank",
+    "Greenwich Merchant Bank",
+    "Nova Merchant Bank",
+    "Rand Merchant Bank",
+    // Development Finance
+    "Bank of Industry (BOI)",
+    "Bank of Agriculture",
+    "Federal Mortgage Bank of Nigeria",
+    "Nigeria Export-Import Bank (NEXIM)",
+    "Development Bank of Nigeria",
   ]
+
+  // Remove duplicates and sort banks
+  const uniqueBanks = Array.from(new Set(banks)).sort()
+
+  // Filter banks based on search query
+  const filteredBanks = bankSearchQuery
+    ? uniqueBanks.filter((bank) => bank.toLowerCase().includes(bankSearchQuery.toLowerCase()))
+    : uniqueBanks
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target
@@ -196,22 +378,63 @@ export default function WithdrawPage() {
               )}
             </div>
 
-            {/* Bank Name */}
-            <div>
+            {/* Bank Name - Searchable Dropdown */}
+            <div className="relative">
               <label className="block text-sm font-semibold text-gray-800 mb-2">Bank Name</label>
-              <select
-                name="bankName"
-                value={formData.bankName}
-                onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-700 bg-white cursor-pointer appearance-none"
+              <button
+                type="button"
+                onClick={() => setShowBankDropdown(!showBankDropdown)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-700 bg-white cursor-pointer text-left flex items-center justify-between hover:border-gray-400 transition"
               >
-                <option value="">Select Bank</option>
-                {banks.map((bank) => (
-                  <option key={bank} value={bank}>
-                    {bank}
-                  </option>
-                ))}
-              </select>
+                <span className={formData.bankName ? "text-gray-700 font-medium" : "text-gray-400"}>
+                  {formData.bankName || "Search or select bank..."}
+                </span>
+                <Search className="w-4 h-4 text-gray-400" />
+              </button>
+
+              {showBankDropdown && (
+                <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg z-50 max-h-64 overflow-hidden flex flex-col">
+                  {/* Search Input */}
+                  <div className="p-3 border-b border-gray-200 sticky top-0 bg-white">
+                    <input
+                      type="text"
+                      placeholder="Search banks..."
+                      value={bankSearchQuery}
+                      onChange={(e) => setBankSearchQuery(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-[#27c26c]"
+                      autoFocus
+                    />
+                  </div>
+
+                  {/* Bank List */}
+                  <div className="overflow-y-auto flex-1">
+                    {filteredBanks.length > 0 ? (
+                      filteredBanks.map((bank) => (
+                        <button
+                          key={bank}
+                          type="button"
+                          onClick={() => {
+                            setFormData({ ...formData, bankName: bank })
+                            setShowBankDropdown(false)
+                            setBankSearchQuery("")
+                          }}
+                          className={`w-full px-4 py-3 text-left text-sm hover:bg-green-50 transition ${
+                            formData.bankName === bank
+                              ? "bg-[#27c26c] text-white font-medium"
+                              : "text-gray-700 hover:text-[#27c26c]"
+                          }`}
+                        >
+                          {bank}
+                        </button>
+                      ))
+                    ) : (
+                      <div className="px-4 py-6 text-center text-gray-500 text-sm">
+                        No banks found
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Account Name */}

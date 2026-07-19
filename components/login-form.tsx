@@ -85,14 +85,19 @@ export function LoginForm() {
 
   return (
     <div className="w-full max-w-4xl px-2 sm:px-0 -mt-2 sm:-mt-1">
-      <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-lg sm:shadow-xl">
+      <div className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-10 shadow-xl">
+        {/* Header Bar */}
+        <div className="w-full h-16 md:h-20 bg-gradient-to-r from-[#1a9b5c] to-[#27c26c] rounded-2xl mb-8 md:mb-10" />
+        
         {/* Tab Buttons */}
-        <div className="flex gap-2 sm:gap-3 md:gap-4 mb-4 sm:mb-6 md:mb-8">
+        <div className="flex gap-3 sm:gap-4 mb-6 sm:mb-8 md:mb-10">
           <button
             type="button"
             onClick={() => setActiveTab("login")}
-            className={`flex-1 py-2.5 sm:py-3 px-4 sm:px-6 rounded-full text-xs sm:text-base font-semibold transition-colors ${
-              activeTab === "login" ? "bg-[#1a9b5c] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+            className={`flex-1 py-3 sm:py-4 px-6 sm:px-8 rounded-full text-sm sm:text-lg font-bold transition-all ${
+              activeTab === "login" 
+                ? "bg-[#1a9b5c] text-white shadow-lg hover:bg-[#168a4f]" 
+                : "bg-gray-200 text-gray-600 hover:bg-gray-300 font-semibold"
             }`}
           >
             LOGIN
@@ -100,8 +105,10 @@ export function LoginForm() {
           <button
             type="button"
             onClick={() => setActiveTab("signup")}
-            className={`flex-1 py-2.5 sm:py-3 px-4 sm:px-6 rounded-full text-xs sm:text-base font-semibold transition-colors ${
-              activeTab === "signup" ? "bg-[#1a9b5c] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+            className={`flex-1 py-3 sm:py-4 px-6 sm:px-8 rounded-full text-sm sm:text-lg font-bold transition-all ${
+              activeTab === "signup" 
+                ? "bg-[#1a9b5c] text-white shadow-lg hover:bg-[#168a4f]" 
+                : "bg-gray-200 text-gray-600 hover:bg-gray-300 font-semibold"
             }`}
           >
             CREATE ACCOUNT
@@ -109,9 +116,9 @@ export function LoginForm() {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4 md:space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5 md:space-y-6">
           {activeTab === "signup" && (
-            <div className="space-y-2">
+            <div>
               <Input
                 id="fullname"
                 type="text"
@@ -119,12 +126,12 @@ export function LoginForm() {
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 required
-                className="h-11 sm:h-12 md:h-14 text-sm sm:text-base bg-gray-50 border-0 placeholder:text-gray-400"
+                className="w-full h-14 sm:h-16 md:h-18 text-base sm:text-lg font-semibold bg-gray-100 border-2 border-gray-200 rounded-xl placeholder:text-gray-500 placeholder:font-medium focus:border-[#1a9b5c] focus:bg-white transition"
               />
             </div>
           )}
 
-          <div className="space-y-2">
+          <div>
             <Input
               id="email"
               type="email"
@@ -132,11 +139,11 @@ export function LoginForm() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="h-11 sm:h-12 md:h-14 text-sm sm:text-base bg-gray-50 border-0 placeholder:text-gray-400"
+              className="w-full h-14 sm:h-16 md:h-18 text-base sm:text-lg font-semibold bg-gray-100 border-2 border-gray-200 rounded-xl placeholder:text-gray-500 placeholder:font-medium focus:border-[#1a9b5c] focus:bg-white transition"
             />
           </div>
 
-          <div className="space-y-2">
+          <div>
             <div className="relative">
               <Input
                 id="password"
@@ -145,21 +152,21 @@ export function LoginForm() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="h-11 sm:h-12 md:h-14 text-sm sm:text-base bg-gray-50 border-0 placeholder:text-gray-400 pr-10 sm:pr-12"
+                className="w-full h-14 sm:h-16 md:h-18 text-base sm:text-lg font-semibold bg-gray-100 border-2 border-gray-200 rounded-xl placeholder:text-gray-500 placeholder:font-medium focus:border-[#1a9b5c] focus:bg-white transition pr-12 sm:pr-14"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                className="absolute right-4 sm:right-5 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
-                {showPassword ? <EyeOff className="w-4 h-4 sm:w-5 sm:h-5" /> : <Eye className="w-4 h-4 sm:w-5 sm:h-5" />}
+                {showPassword ? <EyeOff className="w-5 h-5 sm:w-6 sm:h-6" /> : <Eye className="w-5 h-5 sm:w-6 sm:h-6" />}
               </button>
             </div>
           </div>
 
           {activeTab === "signup" && (
-            <div className="space-y-2">
+            <div>
               <div className="relative">
                 <Input
                   id="confirmPassword"
@@ -168,15 +175,15 @@ export function LoginForm() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
-                  className="h-11 sm:h-12 md:h-14 text-sm sm:text-base bg-gray-50 border-0 placeholder:text-gray-400 pr-10 sm:pr-12"
+                  className="w-full h-14 sm:h-16 md:h-18 text-base sm:text-lg font-semibold bg-gray-100 border-2 border-gray-200 rounded-xl placeholder:text-gray-500 placeholder:font-medium focus:border-[#1a9b5c] focus:bg-white transition pr-12 sm:pr-14"
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                  className="absolute right-4 sm:right-5 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
                   aria-label={showConfirmPassword ? "Hide password" : "Show password"}
                 >
-                  {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showConfirmPassword ? <EyeOff className="w-5 h-5 sm:w-6 sm:h-6" /> : <Eye className="w-5 h-5 sm:w-6 sm:h-6" />}
                 </button>
               </div>
             </div>
@@ -184,7 +191,7 @@ export function LoginForm() {
 
           {activeTab === "login" && (
             <div className="flex justify-end">
-              <button type="button" className="text-sm text-[#1a9b5c] hover:underline font-medium">
+              <button type="button" className="text-base md:text-lg text-[#1a9b5c] hover:text-[#168a4f] underline font-bold">
                 Forgot password?
               </button>
             </div>
@@ -193,7 +200,7 @@ export function LoginForm() {
           <Button
             type="submit"
             disabled={isLoading}
-            className="w-full h-14 text-base font-semibold bg-[#1a9b5c] hover:bg-[#168a4f] text-white rounded-full disabled:opacity-70"
+            className="w-full h-16 sm:h-18 md:h-20 text-lg sm:text-xl font-bold bg-gradient-to-r from-[#1a9b5c] to-[#27c26c] hover:from-[#168a4f] hover:to-[#20a85a] text-white rounded-full disabled:opacity-70 transition-all shadow-lg"
           >
             {isLoading ? "Processing..." : activeTab === "login" ? "LOGIN" : "CREATE ACCOUNT"}
           </Button>
