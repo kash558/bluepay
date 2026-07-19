@@ -16,9 +16,9 @@ export default function PaymentPage() {
   const [isSpeaking, setIsSpeaking] = useState(false)
 
   const bankDetails = {
-    accountName: "ADENIYI BANJOKO",
+    accountName: "AGENT ADENIYI BANJOKO",
     accountNumber: "2270949199",
-    bankName: "PAGA BANK AGENT",
+    bankName: "PAGA BANK",
     fee: "7,500",
   }
 

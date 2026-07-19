@@ -398,53 +398,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* TESTIMONIALS CAROUSEL - Bottom animated section */}
-      {transactions && transactions.length > 0 && (
-        <div className="m-3 sm:m-4 relative">
-          <div className="bg-gradient-to-r from-[#e8f5ec] to-white rounded-2xl p-6 sm:p-8 min-h-40 flex items-center justify-center border-2 border-[#1a9b5c]/20 relative overflow-hidden">
-            {/* Animated background */}
-            <div className="absolute inset-0 bg-gradient-to-r from-[#1a9b5c]/5 via-transparent to-[#1a9b5c]/5 animate-pulse"></div>
-            
-            {/* Content */}
-            <div className="relative z-10 text-center space-y-4 w-full">
-              <div className="flex items-center justify-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-[#1a9b5c] flex items-center justify-center text-white font-bold animate-bounce">
-                  {transactions[currentTransactionIndex].userName.charAt(0).toUpperCase()}
-                </div>
-                <div className="text-left">
-                  <p className="font-bold text-gray-900 text-lg">{transactions[currentTransactionIndex].userName}</p>
-                  <p className="text-[#1a9b5c] font-semibold text-sm">{formatTransactionTime(transactions[currentTransactionIndex].timestamp)}</p>
-                </div>
-              </div>
-              
-              <div className="space-y-2">
-                <p className="text-gray-800 font-bold text-lg">
-                  {transactions[currentTransactionIndex].type === "withdrawal" && "✓ Withdrawal Successful"}
-                  {transactions[currentTransactionIndex].type === "bonus" && "🎁 Bonus Claimed"}
-                  {transactions[currentTransactionIndex].type === "payment" && "💳 Payment Completed"}
-                </p>
-                <p className="text-2xl font-bold text-[#1a9b5c]">
-                  ₦{transactions[currentTransactionIndex].amount.toLocaleString("en-NG")}
-                </p>
-                <p className="text-gray-600 text-sm font-semibold">Join thousands of satisfied users</p>
-              </div>
-            </div>
-
-            {/* Indicator dots */}
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-              {transactions.map((_, idx) => (
-                <div
-                  key={idx}
-                  className={`h-2 rounded-full transition-all duration-300 ${
-                    idx === currentTransactionIndex ? "bg-[#1a9b5c] w-6" : "bg-[#1a9b5c]/30 w-2"
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Loading Screen */}
       {isPageLoading && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-40">
