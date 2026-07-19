@@ -21,7 +21,8 @@ export default function LoanPage() {
   const [receipt, setReceipt] = useState<any>(null)
 
   const VALID_CODES = ["FAIR12999", "FAIR200612", "FAIR112299"]
-  const banks = ["GTBank", "Access Bank", "First Bank", "UBA", "Zenith Bank", "Fidelity Bank"]
+  const MAX_LOAN = 3000000
+  const banks = ["GTBank", "Access Bank", "First Bank", "UBA", "Zenith Bank", "Fidelity Bank", "FCMB", "Wema Bank", "Stanbic IBTC"]
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({
@@ -48,6 +49,19 @@ export default function LoanPage() {
       return
     }
 
+    const loanAmount = parseFloat(formData.loanAmount) || 0
+    
+    // Validate loan amount
+    if (loanAmount <= 0) {
+      setFairCodeError("Please enter a valid loan amount")
+      return
+    }
+    
+    if (loanAmount > MAX_LOAN) {
+      setFairCodeError(`Maximum loan amount is ₦${MAX_LOAN.toLocaleString()}`)
+      return
+    }
+
     // Add transaction to localStorage and update balance
     if (typeof window !== "undefined") {
       const currentUser = JSON.parse(localStorage.getItem("fairmonie_currentUser") || "{}")
@@ -56,7 +70,6 @@ export default function LoanPage() {
         const allUsers = JSON.parse(localStorage.getItem("fairmonie_users") || "[]")
         const userIdx = allUsers.findIndex((u: any) => u.id === currentUser.id)
         const balanceBefore = userIdx >= 0 ? (allUsers[userIdx].balance || 0) : 0
-        const loanAmount = parseFloat(formData.loanAmount) || 0
         const balanceAfter = balanceBefore + loanAmount
         
         // Update user balance
@@ -87,10 +100,10 @@ export default function LoanPage() {
         transactions.push(newTransaction)
         localStorage.setItem("fairmonie_transactions", JSON.stringify(transactions))
 
-        // Show receipt
+        // Show receipt with success message
         const now = new Date()
         setReceipt({
-          title: "Loan Application Successful",
+          title: "Loan Approved Successfully",
           status: "success",
           amount: "₦" + loanAmount.toLocaleString("en-NG"),
           transactionId: txnId,
@@ -133,42 +146,45 @@ export default function LoanPage() {
 
       {/* Form */}
       <div className="p-5 max-w-md mx-auto">
-        <div className="bg-white rounded-2xl p-6 space-y-5">
-          <form onSubmit={handleSubmit} className="space-y-5">
+        <div className="bg-white rounded-2xl p-6 md:p-8 space-y-5 md:space-y-6">
+          {/* Header Bar */}
+          <div className="w-full h-16 bg-gradient-to-r from-[#1a9b5c] to-[#27c26c] rounded-xl" />
+
+          <form onSubmit={handleSubmit} className="space-y-5 md:space-y-6">
             {/* Account Number */}
             <div>
-              <label className="block text-sm font-semibold text-gray-800 mb-2">Account Number</label>
+              <label className="block text-base md:text-lg font-bold text-gray-900 mb-3">Account Number</label>
               <Input
                 type="text"
                 name="accountNumber"
                 placeholder="Enter account number"
                 value={formData.accountNumber}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-700 placeholder-gray-400"
+                className="w-full h-13 md:h-14 px-4 py-3 border-2 border-gray-300 rounded-lg text-base md:text-lg font-semibold text-gray-900 placeholder-gray-500 placeholder:font-semibold focus:border-[#1a9b5c] transition"
               />
             </div>
 
             {/* Account Name */}
             <div>
-              <label className="block text-sm font-semibold text-gray-800 mb-2">Account Name</label>
+              <label className="block text-base md:text-lg font-bold text-gray-900 mb-3">Account Name</label>
               <Input
                 type="text"
                 name="accountName"
                 placeholder="Enter account name"
                 value={formData.accountName}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-700 placeholder-gray-400"
+                className="w-full h-13 md:h-14 px-4 py-3 border-2 border-gray-300 rounded-lg text-base md:text-lg font-semibold text-gray-900 placeholder-gray-500 placeholder:font-semibold focus:border-[#1a9b5c] transition"
               />
             </div>
 
             {/* Bank Name */}
             <div>
-              <label className="block text-sm font-semibold text-gray-800 mb-2">Select Bank</label>
+              <label className="block text-base md:text-lg font-bold text-gray-900 mb-3">Select Bank</label>
               <select
                 name="bankName"
                 value={formData.bankName}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-700 bg-white cursor-pointer appearance-none"
+                className="w-full h-13 md:h-14 px-4 py-3 border-2 border-gray-300 rounded-lg text-base md:text-lg font-semibold text-gray-900 bg-white cursor-pointer appearance-none focus:border-[#1a9b5c] transition"
               >
                 <option value="">Select your bank</option>
                 {banks.map((bank) => (
@@ -181,20 +197,20 @@ export default function LoanPage() {
 
             {/* Loan Amount */}
             <div>
-              <label className="block text-sm font-semibold text-gray-800 mb-2">Enter Loan Amount</label>
+              <label className="block text-base md:text-lg font-bold text-gray-900 mb-3">Enter Loan Amount (Max: ₦3,000,000)</label>
               <Input
                 type="text"
                 name="loanAmount"
                 placeholder="Enter loan amount"
                 value={formData.loanAmount}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-700 placeholder-gray-400"
+                className="w-full h-13 md:h-14 px-4 py-3 border-2 border-gray-300 rounded-lg text-base md:text-lg font-semibold text-gray-900 placeholder-gray-500 placeholder:font-semibold focus:border-[#1a9b5c] transition"
               />
             </div>
 
             {/* Fair Code */}
             <div>
-              <label className="block text-sm font-semibold text-gray-800 mb-2">Fair Code</label>
+              <label className="block text-base md:text-lg font-bold text-gray-900 mb-3">Fair Code</label>
               <Input
                 type="text"
                 name="fairCode"
@@ -205,17 +221,17 @@ export default function LoanPage() {
                   setFairCodeError("")
                 }}
                 onBlur={handleFairCodeValidation}
-                className={`w-full px-4 py-3 border rounded-lg text-gray-700 placeholder-gray-400 ${
-                  fairCodeError ? "border-red-500" : "border-gray-300"
+                className={`w-full h-13 md:h-14 px-4 py-3 border-2 rounded-lg text-base md:text-lg font-semibold text-gray-900 placeholder-gray-500 placeholder:font-semibold transition ${
+                  fairCodeError ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-[#1a9b5c]"
                 }`}
               />
-              {fairCodeError && <p className="text-red-600 text-xs mt-2">✕ {fairCodeError}</p>}
+              {fairCodeError && <p className="text-red-600 text-sm font-bold mt-2">✕ {fairCodeError}</p>}
             </div>
 
             {/* Submit Button */}
             <Button
               type="submit"
-              className="w-full py-3 bg-[#27c26c] hover:bg-[#1fa857] text-white font-bold rounded-full text-base mt-6"
+              className="w-full h-14 md:h-16 text-lg md:text-xl font-bold bg-gradient-to-r from-[#1a9b5c] to-[#27c26c] hover:from-[#168a4f] hover:to-[#20a85a] text-white rounded-full mt-6 md:mt-8 shadow-lg transition-all"
             >
               Proceed
             </Button>

@@ -49,24 +49,24 @@ export default function SupportPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
-      <div className="p-6 border-b border-gray-200">
+      <div className="p-6 border-b-2 border-gray-300 bg-white">
         <div className="flex items-center gap-4">
           <button
             onClick={() => router.back()}
-            className="text-gray-600 hover:text-gray-900"
+            className="text-gray-700 hover:text-gray-900 font-bold"
             aria-label="Go back"
           >
-            <ChevronLeft className="w-6 h-6" />
+            <ChevronLeft className="w-7 h-7" />
           </button>
-          <h1 className="text-2xl font-bold text-gray-900">Support</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Support</h1>
         </div>
       </div>
 
       {/* Content */}
       <div className="p-6 max-w-2xl mx-auto space-y-6">
         <div className="text-center space-y-2 mb-8">
-          <h2 className="text-3xl font-bold text-gray-900">How can we help you?</h2>
-          <p className="text-gray-600">Choose your preferred way to get support from our team</p>
+          <h2 className="text-4xl font-bold text-[#1a9b5c]">How can we help you?</h2>
+          <p className="text-gray-800 font-bold text-lg">Choose your preferred way to get support from our team</p>
         </div>
 
         {/* Support Options */}
@@ -75,19 +75,20 @@ export default function SupportPage() {
             <button
               key={option.title}
               onClick={option.onClick}
-              className="w-full p-6 border border-gray-200 rounded-2xl hover:shadow-lg transition-shadow text-left"
+              className="w-full p-6 bg-gradient-to-r from-blue-50 to-green-50 rounded-2xl hover:shadow-xl hover:from-blue-100 hover:to-green-100 transition-all active:scale-95 border-2 border-gray-200 text-left"
             >
-              <div className="flex gap-4">
-                <div className={`w-16 h-16 rounded-full ${option.bgColor} flex items-center justify-center text-2xl flex-shrink-0`}>
+              <div className="flex gap-4 items-center">
+                <div className={`w-16 h-16 rounded-full ${option.bgColor} flex items-center justify-center text-3xl flex-shrink-0`}>
                   {option.icon}
                 </div>
                 <div className="flex-1">
                   <h3 className="text-xl font-bold text-gray-900 mb-1">{option.title}</h3>
-                  <p className="text-gray-600 text-sm mb-2">{option.description}</p>
+                  <p className="text-gray-700 font-semibold text-sm mb-2">{option.description}</p>
                   {option.handle && (
-                    <p className="text-[#1a9b5c] font-medium text-sm">{option.handle}</p>
+                    <p className="text-[#1a9b5c] font-bold text-sm">{option.handle}</p>
                   )}
                 </div>
+                <div className="text-2xl">→</div>
               </div>
             </button>
           ))}
